@@ -2,7 +2,7 @@
   "name": "bs-auto-dark-mode",
   "displayName": "auto dark mode",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "ColoryPanda",
   "engines": {
     "vscode": "^1.70.0"
