@@ -49,7 +49,6 @@ const Plugin = (options: Options) => {
     // Will be called again on node or children changes.
     // Type: DeclarationProcessor | { [prop: string]: DeclarationProcessor}.
     Declaration(decl: Declaration) {
-      // console.log('decl', decl);
       // 转换 @l- 开头的颜色变量
       if (!options.filterDecl(decl)) {
         decl.remove();
@@ -96,15 +95,19 @@ const Plugin = (options: Options) => {
       console.log('root--', root);
       // 删除 atrule
       root.walkAtRules(rule => {
-        if (rule.name === 'import') {
+        // if (rule.name === 'import') {
           rule.remove();
-        }
+        // }
       });
 
       // 只保留样式，并包裹在暗黑media下
-      let media = new AtRule({ name: 'media', params: '(prefers-color-scheme: dark) and (max-device-width: 1024px)' });
-      media.append(...root.nodes.filter(node => node.type === 'rule'));
-      root.append(media);
+      const validNodes = root.nodes.filter(node => node.type === 'rule');
+
+      if (validNodes.length > 0) {
+        let media = new AtRule({ name: 'media', params: '(prefers-color-scheme: dark) and (max-device-width: 1024px)' });
+        media.append(...validNodes);
+        root.append(media);
+      }
     },
 
     // Will be called on Root node once, when all children will be processed.

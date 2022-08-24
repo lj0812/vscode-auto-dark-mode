@@ -10,6 +10,9 @@ import { ColorItem, ColorMap, CssStyleAttrs, VueComplierStyle } from '../types/i
 import ColorConverter from '../helpers/color-converter';
 import * as vscode from 'vscode';
 
+const INJECT_FLAG = `/* auto injected by auto-dark-mode */`;
+const INJECT_FLAG_REGEXP = INJECT_FLAG.replaceAll('*', '\\*');
+
 /**
  * 从vue单文件模板中获取styles
  * @param template vue 单文件模板内容
@@ -20,16 +23,20 @@ export const getStyleCodes = (template: string) => {
   const { styles } = result;
 
   const enrichedStyles = styles
-    .filter(style => !style.attrs['auto-injected'])
     .map((style) => {
       const { start, end, content } = style;
 
       const startLine = content.slice(0, start).split('\n').length - 1; // zero-based
       const endLine = startLine + content.slice(start + 1, end).split('\n').length;
 
+      const raw = content.slice(start + 1, end)
+        // 替换 /* auto injected by auto-dark-mode */ 到结尾中间的内容为空
+        .replace(new RegExp(`${INJECT_FLAG_REGEXP}.*$`, 'gms'), '');
+
+
       return {
         ...style,
-        content: '\n' + content.slice(start + 1, end).replace(/^\n/gm, '').replace(/\n$/gm, ''),
+        raw,
         startLine,
         endLine,
         lineCount: endLine - startLine + 1,
@@ -40,21 +47,6 @@ export const getStyleCodes = (template: string) => {
 
   return enrichedStyles;
 };
-
-// 根据content 和 attrs 生成style标签
-const createStyleTag = (content: string, attrs: CssStyleAttrs) => {
-  const attrStr = Object.entries(attrs)
-    .map(([key, value]) => {
-      if (typeof value === 'boolean') {
-        return key;
-      }
-
-      return `${key}="${value}"`;
-    })
-    .join(' ');
-  return `<style ${attrStr}>\n${content}\n</style>`;
-};
-
 
 export default async function autoDarkMode() {
   // 1. 获取内容
@@ -87,8 +79,6 @@ export default async function autoDarkMode() {
     })
     .filter(Boolean);
 
-  console.log('colorList', colorList);
-
   const light2DarkWhiteList = [
     '@light_f8f',
     '@light_f5f',
@@ -102,7 +92,6 @@ export default async function autoDarkMode() {
   ];
 
   const colorVarMap = new Map(colorList.map(item => [item.key, item.value]));
-  console.log('colorVarMap', colorVarMap);
 
   // colorList -> colorMap
   const colorMap = colorList.reduce((acc: ColorMap, curr: ColorItem) => {
@@ -111,7 +100,6 @@ export default async function autoDarkMode() {
   }, {});
 
   const cc = new ColorConverter({ colorMap });
-  console.log(cc);
 
   const converter = (decl: Declaration) => {
     let { prop, value } = decl;
@@ -142,24 +130,30 @@ export default async function autoDarkMode() {
   const injectStyles = await Promise.all(
     styles
       .map(async style => {
-        console.log('style', style);
-        const { attrs, content, src } = style;
+        const { raw, src } = style;
 
-        const styleContent = src ? '' : content;
+        const styleContent = '\n' + (src ? '' : raw)
+          .replace(/^\n/gm, '')
+          .replace(/\n$/gm, '');
 
         const processor = postcss([pluginAutoDarkMode({ converter, filterDecl })]);
         const result = await processor.process(styleContent, { from: undefined, syntax });
 
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        const newStyleTag = createStyleTag(result.css, { ...attrs, 'auto-injected': true });
-
+        const injectContent = [
+          INJECT_FLAG,
+          result.css,
+        ].join('\n');
 
         console.log('result', result);
+        const value = [
+          raw,
+          injectContent,
+        ].join('');
 
         return {
           ...style,
-          value: newStyleTag,
-          valueLines: newStyleTag.split('\n').length
+          value,
+          valueLines: value.split('\n').length
         };
       })
   );
@@ -170,19 +164,15 @@ export default async function autoDarkMode() {
   // let point = injectStyles[0].endLine;
   // 重新计算每段要插入的位置
   const locationStyles = injectStyles.map((style, index, array) => {
-    const { endLine, valueLines } = style;
-    const injectStart = endLine + 1;
-    let injectEnd = endLine + 1;
+    const { startLine, endLine, valueLines, lineCount } = style;
+    const injectStart = startLine + 1;
+    let injectEnd = endLine;
 
     const nextStyle = array[index + 1];
 
     if (nextStyle) {
-      injectEnd = nextStyle.startLine;
-
-      nextStyle.startLine = endLine + valueLines + 1;
+      nextStyle.startLine = nextStyle.startLine + (valueLines + 2 - lineCount);
       nextStyle.endLine = nextStyle.startLine + nextStyle.lineCount - 1;
-    } else {
-      injectEnd = endLine + 1e3;
     }
 
     const injectLocation: unknown = [injectStart, injectEnd];

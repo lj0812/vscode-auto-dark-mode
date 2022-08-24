@@ -42,7 +42,5 @@ export const insertSnippet = (style: VueComplierStyle) => {
   const [start, end] = style.injectLocation;
   const injectRange = new vscode.Range(start, 0, end, 0);
 
-  const lastLine = vscode.window.activeTextEditor.document.lineCount - 1;
-  const prePad = start > lastLine ? '\n' : '';
-  vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(prePad + style.value + '\n'), injectRange);
+  vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(style.value + '\n'), injectRange);
 };
