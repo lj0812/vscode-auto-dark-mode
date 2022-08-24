@@ -3,6 +3,7 @@
   "displayName": "auto dark mode",
   "description": "",
   "version": "0.0.1",
+  "publisher": "ColoryPanda",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -10,16 +11,35 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:bs-auto-dark-mode.helloWorld"
+    "onCommand:boss.auto-dark-mode"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "icons": {
+      "icon-moon": {
+        "description": "generate dark mode",
+        "default": {
+          "fontPath": "src/assets/fonts/remixicon.woff",
+          "fontCharacter": "\\ebd4"
+        }
+      }
+    },
     "commands": [
       {
-        "command": "bs-auto-dark-mode.helloWorld",
-        "title": "Hello World"
+        "command": "boss.auto-dark-mode",
+        "title": "Auto Dark Mode",
+        "icon": "$(icon-moon)"
       }
-    ]
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "editorLangId == vue",
+          "command": "boss.auto-dark-mode",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -33,19 +53,24 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.70.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
+    "@types/postcss-less": "^4.0.2",
+    "@types/vscode": "^1.70.0",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.7.4",
+    "postcss": "^8.4.16",
+    "postcss-less": "^6.0.0",
     "ts-loader": "^9.3.1",
+    "typescript": "^4.7.4",
+    "vue": "^2.6.14",
+    "vue-template-compiler": "^2.6.14",
     "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "@vscode/test-electron": "^2.1.5"
+    "webpack-cli": "^4.10.0"
   }
 }
