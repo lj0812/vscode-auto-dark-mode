@@ -1,12 +1,12 @@
 import postcss, { Declaration } from 'postcss';
-import syntax from 'postcss-less';
+import * as syntax from 'postcss-less';
 import pluginAutoDarkMode from '../plugins/postcss-auto-dark-mode/index';
 import * as compiler from 'vue-template-compiler';
 import { includeColor } from '../utils/index';
 
 import { getCurrentFileContent, getThemeFileContent, insertSnippet } from '../helpers/file.vscode';
 
-import { ColorItem, ColorMap, CssStyleAttrs, VueComplierStyle } from '../types/index';
+import { ColorItem, ColorMap, VueComplierStyle } from '../types/index';
 import ColorConverter from '../helpers/color-converter';
 import * as vscode from 'vscode';
 
@@ -160,8 +160,7 @@ export default async function autoDarkMode() {
 
   console.log('injectStyles', injectStyles);
   // 4. 写入文件
-
-  // let point = injectStyles[0].endLine;
+  let offset = 0;
   // 重新计算每段要插入的位置
   const locationStyles = injectStyles.map((style, index, array) => {
     const { startLine, endLine, valueLines, lineCount } = style;
@@ -171,7 +170,8 @@ export default async function autoDarkMode() {
     const nextStyle = array[index + 1];
 
     if (nextStyle) {
-      nextStyle.startLine = nextStyle.startLine + (valueLines + 2 - lineCount);
+      offset += (valueLines + 2 - lineCount);
+      nextStyle.startLine = nextStyle.startLine + offset;
       nextStyle.endLine = nextStyle.startLine + nextStyle.lineCount - 1;
     }
 
@@ -179,6 +179,8 @@ export default async function autoDarkMode() {
 
     return { ...style, injectLocation };
   });
+
+  console.log('locationStyles', locationStyles);
 
   locationStyles.forEach((item) => {
     insertSnippet(item as VueComplierStyle);

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Declaration, Root, Rule, Helpers } from "postcss";
-import { includeColor } from '../../utils/index';
+import { Declaration, Root, Rule, Helpers, comment } from "postcss";
 
 const colorProps = [
   'color',
@@ -93,21 +92,34 @@ const Plugin = (options: Options) => {
     // Type: RootProcessor.
     Once(root: Root, { AtRule }: Helpers) {
       console.log('root--', root);
+      root.walkComments(comment => {
+        comment.remove();
+      });
+
       // 删除 atrule
       root.walkAtRules(rule => {
-        // if (rule.name === 'import') {
           rule.remove();
-        // }
       });
 
       // 只保留样式，并包裹在暗黑media下
       const validNodes = root.nodes.filter(node => node.type === 'rule');
+      console.log('validNodes', validNodes);
 
       if (validNodes.length > 0) {
         let media = new AtRule({ name: 'media', params: '(prefers-color-scheme: dark) and (max-device-width: 1024px)' });
         media.append(...validNodes);
         root.append(media);
       }
+
+      // 遍历在每行前面增加缩进
+      root.walk(node => {
+        if (node.type === 'rule' || node.type === 'decl') {
+          node.raws.before = node.raws.before.replace(/$/, '\t');
+        }
+        if (node.type === 'rule') {
+          node.raws.after = node.raws.after.replace(/$/, '\t');
+        }
+      });
     },
 
     // Will be called on Root node once, when all children will be processed.
