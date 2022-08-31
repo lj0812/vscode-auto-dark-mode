@@ -14,7 +14,7 @@
 
 2. 在 vue 文件下使用命令或点击工具栏按钮生成样式
       1. 命令方式 cmd + shift + p，然后搜索 Auto Dark Mode 执行
-      2. 点击工具栏 ![moon](icon-moon.png)
+      2. 点击工具栏 ![icon-moon.png](https://img.bosszhipin.com/static/file/2022/hqa0pjvq141661917538860.png)
 
 ## 其他情况
 
