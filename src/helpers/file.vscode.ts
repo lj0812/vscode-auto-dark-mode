@@ -42,5 +42,5 @@ export const insertSnippet = (style: VueComplierStyle) => {
   const [start, end] = style.injectLocation;
   const injectRange = new vscode.Range(start, 0, end, 0);
 
-  vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(style.value + '\n'), injectRange);
+  vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(style.value), injectRange, { undoStopBefore: false, undoStopAfter: false });
 };

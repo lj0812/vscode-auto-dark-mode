@@ -1,0 +1,72 @@
+# Auto Dark Mode - 自动生成暗黑样式
+
+## 使用说明
+
+1. 配置颜色变量地址，建议在项目根目录下 .vscode 目录下的 settings.json 配置此参数
+
+    ``` json
+      // .vscode/settings.json
+
+      {
+        "bs.css.variables": "path/to/your/variables/files",
+      }
+    ```
+
+2. 在 vue 文件下使用命令或点击工具栏按钮生成样式
+      1. 命令方式 cmd + shift + p，然后搜索 Auto Dark Mode 执行
+      2. 点击工具栏 ![moon](icon-moon.png)
+
+## 其他情况
+
+### 不需要转换某些样式，如何处理？
+
+在不需要转换样式的 类名 或 属性 上方添加注释 `// disable auto-dark-mode`
+
+1. 只禁用某一行，此时 background 将不会转换颜色
+
+    ``` less
+    .btn {
+      // disable auto-dark-mode
+      background: @l-boss-500;
+      color: @l-white;
+    }
+    ```
+
+2. 禁用一个类名，此时 .btn 下的全部颜色将不会转换
+
+    ``` less
+      // disable auto-dark-mode
+    .btn {
+      background: @l-boss-500;
+      color: @l-white;
+    }
+    ```
+
+### 我想覆盖自动生成的样式，如何处理？
+
+在生成的暗黑样式下方添加额外的 @media (prefers-color-scheme: dark) 覆盖，或者其他提升优先级的方式
+
+> 特别注意：不要在自动生成的代码块内覆盖样式，否则下次生成样式时，自定义样式将丢失
+
+> 特别注意：不要在自动生成的代码块内覆盖样式，否则下次生成样式时，自定义样式将丢失
+
+> 特别注意：不要在自动生成的代码块内覆盖样式，否则下次生成样式时，自定义样式将丢失
+
+``` less
+/* auto injected by auto-dark-mode start */
+@media (prefers-color-scheme: dark) and (max-device-width: 1024px) {
+    .btn {
+      background: @d-boss-500;
+      color: @d-white;
+    }
+}
+/* auto injected by auto-dark-mode end */
+
+@media (prefers-color-scheme: dark) and (max-device-width: 1024px) {
+  // 需要覆盖的样式写在这里
+  .btn {
+    background: @d-blue-500;
+    color: @d-white;
+  }
+}
+```

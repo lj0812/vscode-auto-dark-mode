@@ -10,8 +10,10 @@ import { ColorItem, ColorMap, VueComplierStyle } from '../types/index';
 import ColorConverter from '../helpers/color-converter';
 import * as vscode from 'vscode';
 
-const INJECT_FLAG = `/* auto injected by auto-dark-mode */`;
-const INJECT_FLAG_REGEXP = INJECT_FLAG.replaceAll('*', '\\*');
+const INJECT_START_FLAG = `/* auto injected by auto-dark-mode start */`;
+const INJECT_END_FLAG = `/* auto injected by auto-dark-mode end */`;
+const INJECT_START_FLAG_REGEXP = INJECT_START_FLAG.replaceAll('*', '\\*');
+const INJECT_END_FLAG_REGEXP = INJECT_END_FLAG.replaceAll('*', '\\*');
 
 /**
  * 从vue单文件模板中获取styles
@@ -30,9 +32,8 @@ export const getStyleCodes = (template: string) => {
       const endLine = startLine + content.slice(start + 1, end).split('\n').length;
 
       const raw = content.slice(start + 1, end)
-        // 替换 /* auto injected by auto-dark-mode */ 到结尾中间的内容为空
-        .replace(new RegExp(`${INJECT_FLAG_REGEXP}.*$`, 'gms'), '');
-
+        // 替换指定标记中间的内容为空
+        .replace(new RegExp(`${INJECT_START_FLAG_REGEXP}.*${INJECT_END_FLAG_REGEXP}\n`, 'gms'), '');
 
       return {
         ...style,
@@ -120,6 +121,8 @@ export default async function autoDarkMode() {
     if (light2DarkWhiteList.includes(newValue)) {
       return { value: newValue.replace('@light', '@dark')};
     }
+
+    return null;
   };
 
   const filterDecl = (decl: Declaration) => {
@@ -132,28 +135,35 @@ export default async function autoDarkMode() {
       .map(async style => {
         const { raw, src } = style;
 
-        const styleContent = '\n' + (src ? '' : raw)
+        const pureStyleContent = (src ? '' : raw)
           .replace(/^\n/gm, '')
           .replace(/\n$/gm, '');
 
         const processor = postcss([pluginAutoDarkMode({ converter, filterDecl })]);
-        const result = await processor.process(styleContent, { from: undefined, syntax });
+        const result = await processor.process(pureStyleContent, { from: undefined, syntax });
 
-        const injectContent = [
-          INJECT_FLAG,
-          result.css,
-        ].join('\n');
+        if (!result.css) {
+          return {
+            ...style,
+            value: raw,
+            newLineCount: style.lineCount
+          };
+        }
 
-        console.log('result', result);
-        const value = [
-          raw,
-          injectContent,
-        ].join('');
+        const injectContent = [INJECT_START_FLAG, result.css, INJECT_END_FLAG].join('\n') + '\n';
+
+        // 分隔正常样式和暗黑样式
+        const rawArr = raw.split(/^(?=@media +.*\(prefers-color-scheme: +dark\))/m);
+        const [normalStyle, ...customDarkStyles] = rawArr;
+        // 在其中插入自动生成的内容
+        const value = [normalStyle, injectContent].concat(customDarkStyles).join('');
+        // 1 => 2 - 1 其中2为style标签占据的2行，1为插入内容最后添加的\n
+        const newLineCount = value.split('\n').length + 1;
 
         return {
           ...style,
-          value,
-          valueLines: value.split('\n').length
+          value: value,
+          newLineCount
         };
       })
   );
@@ -163,14 +173,15 @@ export default async function autoDarkMode() {
   let offset = 0;
   // 重新计算每段要插入的位置
   const locationStyles = injectStyles.map((style, index, array) => {
-    const { startLine, endLine, valueLines, lineCount } = style;
+    const { startLine, endLine, newLineCount, lineCount } = style;
     const injectStart = startLine + 1;
     let injectEnd = endLine;
 
     const nextStyle = array[index + 1];
 
     if (nextStyle) {
-      offset += (valueLines + 2 - lineCount);
+      offset += (newLineCount - lineCount);
+      // 后续的块整体偏移，块本身不受影响
       nextStyle.startLine = nextStyle.startLine + offset;
       nextStyle.endLine = nextStyle.startLine + nextStyle.lineCount - 1;
     }

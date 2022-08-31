@@ -32,7 +32,7 @@ export type VueComplierStyle = {
   startLine: number,
   endLine: number,
   value: string,
-  valueLines: number,
   lineCount: number,
+  newLineCount: number,
   injectLocation: [number, number]
 }

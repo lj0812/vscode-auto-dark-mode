@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Declaration, Root, Rule, Helpers, comment } from "postcss";
+import { Declaration, Root, Rule, Helpers, Result, comment } from "postcss";
 
 const colorProps = [
   'color',
@@ -11,6 +11,8 @@ interface Options {
   converter: (decl: Declaration) => any,
   filterDecl: (decl: Declaration) => any,
 }
+
+const DISABLE_FLAG = 'disable auto-dark-mode';
 
 const Plugin = (options: Options) => {
   return {
@@ -47,19 +49,9 @@ const Plugin = (options: Options) => {
     // Will be called on all Declaration nodes after listeners for Declaration event.
     // Will be called again on node or children changes.
     // Type: DeclarationProcessor | { [prop: string]: DeclarationProcessor}.
-    Declaration(decl: Declaration) {
-      // 转换 @l- 开头的颜色变量
-      if (!options.filterDecl(decl)) {
-        decl.remove();
-        return;
-      }
+    // Declaration(decl: Declaration) {
 
-      const result = options.converter(decl);
-
-      if (result) {
-        Object.assign(decl, result);
-      }
-    },
+    // },
 
     // Will be called on all Declaration nodes.
     // Will be called again on node or children changes.
@@ -90,9 +82,11 @@ const Plugin = (options: Options) => {
 
     // Will be called on Root node once.
     // Type: RootProcessor.
-    Once(root: Root, { AtRule }: Helpers) {
-      console.log('root--', root);
+    Once(root: Root) {
       root.walkComments(comment => {
+        if (comment.text.includes(DISABLE_FLAG)) {
+          comment.next().remove();
+        }
         comment.remove();
       });
 
@@ -101,32 +95,49 @@ const Plugin = (options: Options) => {
           rule.remove();
       });
 
-      // 只保留样式，并包裹在暗黑media下
-      const validNodes = root.nodes.filter(node => node.type === 'rule');
-      console.log('validNodes', validNodes);
-
-      if (validNodes.length > 0) {
-        let media = new AtRule({ name: 'media', params: '(prefers-color-scheme: dark) and (max-device-width: 1024px)' });
-        media.append(...validNodes);
-        root.append(media);
-      }
-
-      // 遍历在每行前面增加缩进
-      root.walk(node => {
-        if (node.type === 'rule' || node.type === 'decl') {
-          node.raws.before = node.raws.before.replace(/$/, '\t');
+      root.walkDecls(decl => {
+        if (!options.filterDecl(decl)) {
+          decl.remove();
+          return;
         }
-        if (node.type === 'rule') {
-          node.raws.after = node.raws.after.replace(/$/, '\t');
+
+        const result = options.converter(decl);
+
+        if (!result) {
+          decl.remove();
+          return;
         }
+
+        Object.assign(decl, result);
       });
     },
 
     // Will be called on Root node once, when all children will be processed.
     // Type: RootProcessor.
-    // OnceExit() {
+    OnceExit(root: Root, { AtRule }: Helpers) {
+      // 只保留样式，并包裹在暗黑media下
+      const validNodes = root.nodes.filter(node => node.type === 'rule');
 
-    // },
+      validNodes.forEach(node => {
+        node.raws.before = node.raws.before.replace(/^/, '\n');
+      });
+
+      if (validNodes.length > 0) {
+        let media = new AtRule({ name: 'media', params: '(prefers-color-scheme: dark) and (max-device-width: 1024px)' });
+        media.append(...validNodes);
+        root.append(media);
+
+        // 遍历在每行前面增加缩进
+        root.walk(node => {
+          if (node.type === 'rule' || node.type === 'decl') {
+            node.raws.before = node.raws.before.replace(/$/, '\t');
+          }
+          if (node.type === 'rule') {
+            node.raws.after = node.raws.after.replace(/$/, '\t');
+          }
+        });
+      }
+    },
 
 
     // Will be called on Root node.
@@ -159,8 +170,8 @@ const Plugin = (options: Options) => {
 
     // },
 
-    // prepare() {
-
+    // prepare(result: Result) {
+    //   console.log('prepare', JSON.parse(JSON.stringify(result)));
     // }
   };
 };
