@@ -33,6 +33,6 @@ export type VueComplierStyle = {
   endLine: number,
   value: string,
   lineCount: number,
-  newLineCount: number,
+  newLineCount?: number,
   injectLocation: [number, number]
 }

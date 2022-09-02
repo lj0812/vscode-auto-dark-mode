@@ -28,6 +28,11 @@ export default class ColorConverter {
 
   // 替换hex
   public replaceHex(hex: string) {
+    // 将3位色值统一成6位
+    if (hex.length === 4) {
+      hex = hex.replace(/[0-9a-f]/ig, match => match + match);
+    }
+
     return this.getVarByHex(hex) || hex;
   }
 

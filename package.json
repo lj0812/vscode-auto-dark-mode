@@ -12,7 +12,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:boss.auto-dark-mode"
+    "onCommand:boss.auto-dark-mode",
+    "onCommand:boss.replace-color"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -23,6 +24,13 @@
           "fontPath": "src/assets/fonts/remixicon.woff",
           "fontCharacter": "\\ebd4"
         }
+      },
+      "icon-replace":{
+        "description": "replace color",
+        "default": {
+          "fontPath": "src/assets/fonts/remixicon.woff",
+          "fontCharacter": "\\ed2a"
+        }
       }
     },
     "commands": [
@@ -30,10 +38,20 @@
         "command": "boss.auto-dark-mode",
         "title": "Auto Dark Mode",
         "icon": "$(icon-moon)"
+      },
+      {
+        "command": "boss.replace-color",
+        "title": "Replace Color",
+        "icon": "$(icon-replace)"
       }
     ],
     "menus": {
       "editor/title": [
+        {
+          "when": "editorLangId == vue",
+          "command": "boss.replace-color",
+          "group": "navigation"
+        },
         {
           "when": "editorLangId == vue",
           "command": "boss.auto-dark-mode",

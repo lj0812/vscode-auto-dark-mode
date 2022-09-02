@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import autoDarkMode from './commands/auto-dark-mode';
+import replaceColor from './commands/replace-color';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -19,7 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
 		autoDarkMode();
 	});
 
-	context.subscriptions.push(disposable);
+	const disposable2 = vscode.commands.registerCommand('boss.replace-color', () => {
+		replaceColor();
+	});
+
+	context.subscriptions.push(disposable, disposable2);
 }
 
 // this method is called when your extension is deactivated
