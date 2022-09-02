@@ -41,3 +41,6 @@ export const parseRgbaStr = (rgbaStr: string) => {
 export const rgb2hex = (r: number, g: number, b: number) => {
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 };
+
+// 3位hex转6位hex
+export const normalizeHex = (hex: string) => hex.length >=6 ? hex : hex.replace(/[0-9a-f]/ig, match => match.repeat(2));

@@ -2,7 +2,9 @@
 
 ## 使用说明
 
-1. 配置颜色变量地址，建议在项目根目录下 .vscode 目录下的 settings.json 配置此参数
+### 0. 配置参数
+
+配置颜色变量地址，建议在项目根目录下 .vscode 目录下的 settings.json 配置此参数
 
     ``` json
       // .vscode/settings.json
@@ -12,37 +14,47 @@
       }
     ```
 
-2. 在 vue 文件下使用命令或点击工具栏按钮生成样式
-      1. 命令方式 cmd + shift + p，然后搜索 Auto Dark Mode 执行
-      2. 点击工具栏 ![icon-moon.png](https://img.bosszhipin.com/static/file/2022/hqa0pjvq141661917538860.png)
+### 1. 替换旧版色值
+
+在 vue 文件下使用命令或点击工具栏按钮替换旧版色值
+
+1. 点击工具栏 ![icon-paint.png](https://img.bosszhipin.com/static/file/2022/hoj7lgvsyq1662101737648.png)
+2. 命令方式 cmd + shift + p，然后搜索 Replace Color 执行
+
+### 2. 生成暗黑样式
+
+在 vue 文件下使用命令或点击工具栏按钮生成样式
+
+1. 点击工具栏 ![icon-moon.png](https://img.bosszhipin.com/static/file/2022/hqa0pjvq141661917538860.png)
+2. 命令方式 cmd + shift + p，然后搜索 Auto Dark Mode 执行
 
 ## 其他情况
 
-### 不需要转换某些样式，如何处理？
+### 1. 不需要转换某些样式，如何处理？
 
 在不需要转换样式的 类名 或 属性 上方添加注释 `// disable auto-dark-mode`
 
 1. 只禁用某一行，此时 background 将不会转换颜色
 
     ``` less
-    .btn {
-      // disable auto-dark-mode
-      background: @l-boss-500;
-      color: @l-white;
-    }
+      .btn {
+        // disable auto-dark-mode
+        background: @l-boss-500;
+        color: @l-white;
+      }
     ```
 
 2. 禁用一个类名，此时 .btn 下的全部颜色将不会转换
 
     ``` less
       // disable auto-dark-mode
-    .btn {
-      background: @l-boss-500;
-      color: @l-white;
-    }
+      .btn {
+        background: @l-boss-500;
+        color: @l-white;
+      }
     ```
 
-### 我想覆盖自动生成的样式，如何处理？
+### 2. 我想覆盖自动生成的样式，如何处理？
 
 在生成的暗黑样式下方添加额外的 @media (prefers-color-scheme: dark) 覆盖，或者其他提升优先级的方式
 

@@ -29,7 +29,7 @@
         "description": "replace color",
         "default": {
           "fontPath": "src/assets/fonts/remixicon.woff",
-          "fontCharacter": "\\ed2a"
+          "fontCharacter": "\\efc0"
         }
       }
     },
@@ -50,12 +50,12 @@
         {
           "when": "editorLangId == vue",
           "command": "boss.replace-color",
-          "group": "navigation"
+          "group": "navigation@-2"
         },
         {
           "when": "editorLangId == vue",
           "command": "boss.auto-dark-mode",
-          "group": "navigation"
+          "group": "navigation@-1"
         }
       ]
     }

@@ -83,6 +83,7 @@ export default async function autoDarkMode() {
 
   console.log('colorMap', colorMap);
 
+  /* eslint-disable @typescript-eslint/naming-convention */
   const replaceColorMap: { [x: string]: string } = {
     '@light_f8f': '@l-grey-100',
     '@light_f5f': '@l-grey-200',
@@ -104,7 +105,7 @@ export default async function autoDarkMode() {
   const converter = (decl: Declaration) => {
     let { value } = decl;
 
-    // 根据色值或变量转成旧色值对应的变量 todo: fade()的情况
+    // 根据色值或变量转成旧色值对应的变量
     const oldColor: string = cc.convert(value);
 
     // 根据对应关系找到新色值对应的变量
