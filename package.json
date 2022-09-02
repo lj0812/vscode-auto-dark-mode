@@ -2,7 +2,7 @@
   "name": "bs-auto-dark-mode",
   "displayName": "auto dark mode",
   "description": "",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "ColoryPanda",
   "icon": "src/assets/images/icon.png",
   "engines": {
@@ -25,7 +25,7 @@
           "fontCharacter": "\\ebd4"
         }
       },
-      "icon-replace":{
+      "icon-replace": {
         "description": "replace color",
         "default": {
           "fontPath": "src/assets/fonts/remixicon.woff",
