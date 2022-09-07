@@ -2,7 +2,7 @@
   "name": "bs-auto-dark-mode",
   "displayName": "auto dark mode",
   "description": "",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "publisher": "ColoryPanda",
   "icon": "src/assets/images/icon.png",
   "engines": {
