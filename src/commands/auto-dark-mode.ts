@@ -128,7 +128,7 @@ export default async function autoDarkMode() {
     }
 
     // 转换 @l- 开头的颜色变量
-    if (/@l-[^-]+-\d{3,4}/.test(newValue)) {
+    if (/(@l-[^-]+-\d{3,4}|@l-white)/.test(newValue)) {
       return { value: newValue.replace('@l', '@d') };
     }
 
