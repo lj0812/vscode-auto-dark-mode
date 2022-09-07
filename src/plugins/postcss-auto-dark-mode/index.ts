@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Declaration, Root, Rule, Helpers, Result, comment } from "postcss";
+import { Declaration, Root, Rule, Helpers, Result, comment, AtRule } from "postcss";
+import { MixinAtRule } from 'postcss-less';
 
 const colorProps = [
   'color',
@@ -7,10 +8,10 @@ const colorProps = [
   'border'
 ];
 
-interface Options {
-  converter: (decl: Declaration) => any,
-  filterDecl: (decl: Declaration) => any,
-}
+type Options = {
+  converter: Function,
+  filterDecl: Function,
+};
 
 const DISABLE_FLAG = 'disable auto-dark-mode';
 
@@ -83,6 +84,7 @@ const Plugin = (options: Options) => {
     // Will be called on Root node once.
     // Type: RootProcessor.
     Once(root: Root) {
+      console.log('root', JSON.parse(JSON.stringify(root)));
       root.walkComments(comment => {
         if (comment.text.includes(DISABLE_FLAG)) {
           comment.next().remove();
@@ -91,8 +93,20 @@ const Plugin = (options: Options) => {
       });
 
       // 删除 atrule
-      root.walkAtRules(rule => {
+      root.walkAtRules((rule) => {
+        if (!options.filterDecl(rule)) {
           rule.remove();
+          return;
+        }
+
+        const result = options.converter(rule);
+
+        if (!result) {
+          rule.remove();
+          return;
+        }
+
+        rule.params = result.value;
       });
 
       root.walkDecls(decl => {
@@ -129,7 +143,7 @@ const Plugin = (options: Options) => {
 
         // 遍历在每行前面增加缩进
         root.walk(node => {
-          if (node.type === 'rule' || node.type === 'decl') {
+          if (node.type === 'rule' || node.type === 'decl' || (node.type === 'atrule' && (node as MixinAtRule).mixin)) {
             node.raws.before = node.raws.before.replace(/$/, '\t');
           }
           if (node.type === 'rule') {

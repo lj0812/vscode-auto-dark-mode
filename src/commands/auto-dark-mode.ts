@@ -1,4 +1,5 @@
 import postcss, { Declaration } from 'postcss';
+import { MixinAtRule } from 'postcss-less';
 import * as syntax from 'postcss-less';
 import pluginAutoDarkMode from '../plugins/postcss-auto-dark-mode/index';
 import * as compiler from 'vue-template-compiler';
@@ -91,6 +92,7 @@ export default async function autoDarkMode() {
     '@light_aaa',
     '@light_c7c',
   ];
+  const dark2LightWhiteListRegexp = new RegExp(light2DarkWhiteList.join('|'));
 
   const colorVarMap = new Map(colorList.map(item => [item.key, item.value]));
 
@@ -102,31 +104,50 @@ export default async function autoDarkMode() {
 
   const cc = new ColorConverter({ colorMap });
 
-  const converter = (decl: Declaration) => {
-    let { prop, value } = decl;
+  function converter(param: Declaration | MixinAtRule): object | null {
+    let key = '';
+    let value = '';
+
+    if (param.type === 'decl') {
+      key = param.prop;
+      value = param.value;
+    } else if (param.type === 'atrule') {
+      key = param.name;
+      value = param.params;
+    }
+
     // 转白色：背景色为白色时转换
-    if (prop.startsWith('background') && /^#(?:F{6}|F{3})$/.test(value.toUpperCase())) {
+    if (key.startsWith('background') && /^#(?:F{6}|F{3})$/.test(value.toUpperCase())) {
       return { value: '@dark_222' };
     }
 
     // 颜色转变量
     const newValue = cc.convert(value);
+    if (param.type === 'atrule') {
+      console.log(value, newValue);
+    }
 
     // 转换 @l- 开头的颜色变量
-    if (newValue.startsWith('@l-')) {
+    if (/@l-[^-]+-\d{3,4}/.test(newValue)) {
       return { value: newValue.replace('@l', '@d') };
     }
 
     // 处理白名单色值
-    if (light2DarkWhiteList.includes(newValue)) {
+    if (dark2LightWhiteListRegexp.test(newValue)) {
       return { value: newValue.replace('@light', '@dark')};
     }
 
     return null;
   };
 
-  const filterDecl = (decl: Declaration) => {
-    return colorVarMap.has(decl.value) || includeColor(decl.value);
+  const filterDecl = (param: Declaration | MixinAtRule) => {
+    if (param.type === 'decl') {
+      return param.prop.startsWith('color') || param.prop.startsWith('background');
+    } else if (param.type === 'atrule') {
+      return param.mixin;
+    }
+
+    return false;
   };
 
   // 3. 转换

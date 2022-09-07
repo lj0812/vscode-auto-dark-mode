@@ -1,5 +1,6 @@
 import postcss, { Declaration } from 'postcss';
 import * as syntax from 'postcss-less';
+import { MixinAtRule } from 'postcss-less';
 import pluginReplaceColor from '../plugins/postcss-replace-color/index';
 import * as compiler from 'vue-template-compiler';
 import { includeColor } from '../utils/index';
@@ -102,8 +103,8 @@ export default async function autoDarkMode() {
 
   const cc = new ColorConverter({ colorMap });
 
-  const converter = (decl: Declaration) => {
-    let { value } = decl;
+  const converter = (decl: Declaration | MixinAtRule) => {
+    const value = decl.type === 'decl' ? decl.value : decl.params;
 
     // 根据色值或变量转成旧色值对应的变量
     const oldColor: string = cc.convert(value);
@@ -116,8 +117,14 @@ export default async function autoDarkMode() {
     };
   };
 
-  const filterDecl = (decl: Declaration) => {
-    return colorVarMap.has(decl.value) || includeColor(decl.value);
+  const filterDecl = (param: Declaration | MixinAtRule) => {
+    if (param.type === 'decl') {
+      return param.prop.startsWith('color') || param.prop.startsWith('background');
+    } else if (param.type === 'atrule') {
+      return param.mixin;
+    }
+
+    return false;
   };
 
   // 3. 转换
