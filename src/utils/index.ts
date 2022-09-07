@@ -1,10 +1,10 @@
 import { RgbaColor } from '../types/index';
 export const isHexColor = (color: string) => {
-  return /#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/.test(color);
+  return /#([a-f0-9]{6}|[a-f0-9]{3})/i.test(color);
 };
 
 export const isRgbColor = (color: string) => {
-  return /rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)/.test(color);
+  return /rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)/i.test(color);
 };
 
 export const includeColor = (color: string) => {
@@ -25,7 +25,7 @@ export const formatPercent = (num: number) => {
  * @returns {Object}
  */
 export const parseRgbaStr = (rgbaStr: string) => {
-  let [, r, g, b, a] = rgbaStr.match(/^rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)$/);
+  let [, r, g, b, a] = rgbaStr.match(/^rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)$/i);
 
   const result: RgbaColor = {
     r: parseInt(r),

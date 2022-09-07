@@ -56,7 +56,7 @@ export default class ColorConverter {
   // rgb(164, 235, 235) -> @l-boss-300
   public convert(colorStr: string) {
     return colorStr
-      .replaceAll(/#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})/g, (hex) => this.replaceHex(hex))
-      .replaceAll(/rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)/g, rgba => this.replaceRgba(rgba));
+      .replaceAll(/#([a-f0-9]{6}|[a-f0-9]{3})/ig, (hex) => this.replaceHex(hex))
+      .replaceAll(/rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)/ig, rgba => this.replaceRgba(rgba));
   }
 }
