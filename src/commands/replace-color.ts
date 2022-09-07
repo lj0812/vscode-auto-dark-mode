@@ -119,8 +119,9 @@ export default async function autoDarkMode() {
 
   const filterDecl = (param: Declaration | MixinAtRule) => {
     if (param.type === 'decl') {
-      return param.prop.startsWith('color') || param.prop.startsWith('background');
+      return colorVarMap.has(param.value) || includeColor(param.value);
     } else if (param.type === 'atrule') {
+      // todo
       return param.mixin;
     }
 
