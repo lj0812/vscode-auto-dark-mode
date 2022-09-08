@@ -94,7 +94,8 @@ export default async function autoDarkMode() {
   ];
   const dark2LightWhiteListRegexp = new RegExp(light2DarkWhiteList.join('|'));
 
-  const colorVarMap = new Map(colorList.map(item => [item.key, item.value]));
+  // const colorVarMap = new Map(colorList.map(item => [item.key, item.value]));
+  const colorVarRegexp = new RegExp(colorList.map(_ => _.key).join('|'));
 
   // colorList -> colorMap
   const colorMap = colorList.reduce((acc: ColorMap, curr: ColorItem) => {
@@ -141,11 +142,14 @@ export default async function autoDarkMode() {
   };
 
   const filterDecl = (param: Declaration | MixinAtRule) => {
+    const value = param.type === 'decl' ? param.value : param.params;
+
+    const hasColor = colorVarRegexp.test(value) || includeColor(value);
+
     if (param.type === 'decl') {
-      return colorVarMap.has(param.value) || includeColor(param.value);
+      return hasColor;
     } else if (param.type === 'atrule') {
-      // todo
-      return param.mixin;
+      return param.mixin && hasColor;
     }
 
     return false;
