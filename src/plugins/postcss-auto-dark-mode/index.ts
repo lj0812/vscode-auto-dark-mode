@@ -141,8 +141,12 @@ const Plugin = (options: Options) => {
         media.append(...validNodes);
         root.append(media);
 
-        // 遍历在每行前面增加缩进
         root.walk(node => {
+          // 嵌套最终剩下属性时补全分号
+          if (node.type === 'rule' && node.nodes.every(n => n.type === 'decl') && node.raws?.semicolon === false) {
+            node.raws.semicolon = true;
+          }
+          // 遍历在每行前面增加缩进
           if (node.type === 'rule' || node.type === 'decl' || (node.type === 'atrule' && (node as MixinAtRule).mixin)) {
             node.raws.before = node.raws.before.replace(/$/, '\t');
           }
@@ -151,6 +155,8 @@ const Plugin = (options: Options) => {
           }
         });
       }
+
+      console.log('root exit', JSON.parse(JSON.stringify(root)));
     },
 
 

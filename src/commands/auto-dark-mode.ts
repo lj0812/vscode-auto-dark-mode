@@ -194,7 +194,6 @@ export default async function autoDarkMode() {
       })
   );
 
-  console.log('injectStyles', injectStyles);
   // 4. 写入文件
   let offset = 0;
   // 重新计算每段要插入的位置
