@@ -82,3 +82,39 @@
   }
 }
 ```
+
+### 3. 我想保留生成的暗黑代码里的所有颜色
+
+默认配置下，生成的暗黑代码只保留了能够匹配出色值的颜色
+比如下面只会保留 background 的色值
+
+    ``` less
+    .btn{
+      color: #135246; // 无应的色值
+      background: #F5F5F6; // 对应 @l-grey-100
+    }
+    /* auto injected by auto-dark-mode start */
+    @media (prefers-color-scheme: dark) and (max-device-width: 1024px) {
+      .btn{
+        background: @d-grey-100;
+      }
+    }
+    /* auto injected by auto-dark-mode end */
+    ```
+
+如果想保留所有色值需配置 `bs.css.saveUnconvertedColor: true`，配置后将保留原色值
+
+    ``` less
+    .btn{
+      color: #135246; // 无应的色值
+      background: #F5F5F6; // 对应 @l-grey-100
+    }
+    /* auto injected by auto-dark-mode start */
+    @media (prefers-color-scheme: dark) and (max-device-width: 1024px) {
+      .btn{
+        color: #135246; // 保留原色值
+        background: @d-grey-100;
+      }
+    }
+    /* auto injected by auto-dark-mode end */
+    ```
