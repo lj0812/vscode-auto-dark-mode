@@ -6,6 +6,7 @@ import * as compiler from 'vue-template-compiler';
 import { includeColor } from '../utils/index';
 
 import { getCurrentFileContent, getThemeFileContent, insertSnippet } from '../helpers/file.vscode';
+import { getSaveUnconvertedColorConfig } from '../helpers/config.vscode';
 
 import { ColorItem, ColorMap, VueComplierStyle } from '../types/index';
 import ColorConverter from '../helpers/color-converter';
@@ -124,9 +125,6 @@ export default async function autoDarkMode() {
 
     // 颜色转变量
     const newValue = cc.convert(value);
-    if (param.type === 'atrule') {
-      console.log(value, newValue);
-    }
 
     // 转换 @l- 开头的颜色变量
     if (/(@l-[^-]+-\d{3,4}|@l-white)/.test(newValue)) {
@@ -136,6 +134,12 @@ export default async function autoDarkMode() {
     // 处理白名单色值
     if (dark2LightWhiteListRegexp.test(newValue)) {
       return { value: newValue.replace('@light', '@dark')};
+    }
+
+    const saveUnconvertedColor = getSaveUnconvertedColorConfig();
+
+    if (saveUnconvertedColor) {
+      return { value };
     }
 
     return null;
