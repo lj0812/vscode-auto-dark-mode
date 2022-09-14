@@ -146,6 +146,10 @@ const Plugin = (options: Options) => {
           if (node.type === 'rule' && node.nodes.every(n => n.type === 'decl') && node.raws?.semicolon === false) {
             node.raws.semicolon = true;
           }
+          // 对于多行属性值增加适当缩进
+          if (node.type === 'decl') {
+            node.value = node.value.replace(/\n/g, '\n\t');
+          }
           // 遍历在每行前面增加缩进
           if (node.type === 'rule' || node.type === 'decl' || (node.type === 'atrule' && (node as MixinAtRule).mixin)) {
             node.raws.before = node.raws.before.replace(/$/, '\t');

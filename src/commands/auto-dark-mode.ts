@@ -16,6 +16,7 @@ const INJECT_START_FLAG = `/* auto injected by auto-dark-mode start */`;
 const INJECT_END_FLAG = `/* auto injected by auto-dark-mode end */`;
 const INJECT_START_FLAG_REGEXP = INJECT_START_FLAG.replaceAll('*', '\\*');
 const INJECT_END_FLAG_REGEXP = INJECT_END_FLAG.replaceAll('*', '\\*');
+const LIGHT_IMAGE_REGEXP = /(--|__)light/;
 
 /**
  * 从vue单文件模板中获取styles
@@ -118,6 +119,12 @@ export default async function autoDarkMode() {
       value = param.params;
     }
 
+    // 转图片
+    const hasLightImage = key.includes('background') && LIGHT_IMAGE_REGEXP.test(value);
+    if (hasLightImage) {
+      value = value.replace(new RegExp(LIGHT_IMAGE_REGEXP, 'g'), '$1dark');
+    }
+
     // 转白色：背景色为白色时转换
     if (key.startsWith('background') && /^#(?:F{6}|F{3})$/.test(value.toUpperCase())) {
       return { value: '@dark_222' };
@@ -151,7 +158,9 @@ export default async function autoDarkMode() {
     const hasColor = colorVarRegexp.test(value) || includeColor(value);
 
     if (param.type === 'decl') {
-      return hasColor;
+      const hasLightImage = param.prop.includes('background') && LIGHT_IMAGE_REGEXP.test(value);
+
+      return hasColor || hasLightImage;
     } else if (param.type === 'atrule') {
       return param.mixin && hasColor;
     }

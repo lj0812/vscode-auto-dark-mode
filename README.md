@@ -105,16 +105,16 @@
 如果想保留所有色值需配置 `bs.css.saveUnconvertedColor: true`，配置后将保留原色值
 
 ``` less
+.btn{
+  color: #135246; // 无应的色值
+  background: #F5F5F6; // 对应 @l-grey-100
+}
+/* auto injected by auto-dark-mode start */
+@media (prefers-color-scheme: dark) and (max-device-width: 1024px) {
   .btn{
-    color: #135246; // 无应的色值
-    background: #F5F5F6; // 对应 @l-grey-100
+    color: #135246; // 保留原色值
+    background: @d-grey-100;
   }
-  /* auto injected by auto-dark-mode start */
-  @media (prefers-color-scheme: dark) and (max-device-width: 1024px) {
-    .btn{
-      color: #135246; // 保留原色值
-      background: @d-grey-100;
-    }
-  }
-  /* auto injected by auto-dark-mode end */
+}
+/* auto injected by auto-dark-mode end */
 ```
