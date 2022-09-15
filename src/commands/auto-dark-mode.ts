@@ -123,6 +123,11 @@ export default async function autoDarkMode() {
     const hasLightImage = key.includes('background') && LIGHT_IMAGE_REGEXP.test(value);
     if (hasLightImage) {
       value = value.replace(new RegExp(LIGHT_IMAGE_REGEXP, 'g'), '$1dark');
+
+      const hasColor = colorVarRegexp.test(value) || includeColor(value);
+      if (!hasColor) {
+        return { value };
+      }
     }
 
     // 转白色：背景色为白色时转换
@@ -135,12 +140,12 @@ export default async function autoDarkMode() {
 
     // 转换 @l- 开头的颜色变量
     if (/(@l-[^-]+-\d{3,4}|@l-white)/.test(newValue)) {
-      return { value: newValue.replace('@l', '@d') };
+      return { value: newValue.replaceAll('@l', '@d') };
     }
 
     // 处理白名单色值
     if (dark2LightWhiteListRegexp.test(newValue)) {
-      return { value: newValue.replace('@light', '@dark')};
+      return { value: newValue.replaceAll('@light', '@dark')};
     }
 
     const saveUnconvertedColor = getSaveUnconvertedColorConfig();
