@@ -28,6 +28,11 @@
 1. 点击工具栏 ![icon-moon.png](https://img.bosszhipin.com/static/file/2022/hqa0pjvq141661917538860.png)
 2. 命令方式 cmd + shift + p，然后搜索 Auto Dark Mode 执行
 
+### 3. 根据HTML结构生成style
+
+1. 点击工具栏 ![icon-magic.png](https://img.bosszhipin.com/static/file/2022/ctpn9qy8p01663578433077.png)
+2. 命令方式 cmd + shift + p，然后搜索 Generate Style Tree 执行
+
 ## 其他情况
 
 ### 1. 不需要转换某些样式，如何处理？

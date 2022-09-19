@@ -54,7 +54,7 @@
       },
       {
         "command": "boss.generate-style-tree",
-        "title": "Generate Class Tree",
+        "title": "Generate Style Tree",
         "icon": "$(icon-magic)"
       }
     ],
