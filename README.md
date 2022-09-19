@@ -30,6 +30,8 @@
 
 ### 3. 根据HTML结构生成style
 
+在 vue 文件下使用命令或点击工具栏按钮根据HTML结构生成style
+
 1. 点击工具栏 ![icon-magic.png](https://img.bosszhipin.com/static/file/2022/ctpn9qy8p01663578433077.png)
 2. 命令方式 cmd + shift + p，然后搜索 Generate Style Tree 执行
 
