@@ -36,3 +36,8 @@ export type VueComplierStyle = {
   newLineCount?: number,
   injectLocation: [number, number]
 }
+
+export type Position = {
+  start: number,
+  end: number
+}

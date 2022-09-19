@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getThemePathConfig } from './config.vscode';
-import { VueComplierStyle } from '../types';
+import { VueComplierStyle, Position} from '../types';
 
 export const getCurrentFileContent = (): string => {
   const activeEditor = vscode.window.activeTextEditor;
@@ -43,4 +43,12 @@ export const insertSnippet = (style: VueComplierStyle) => {
   const injectRange = new vscode.Range(start, 0, end, 0);
 
   vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(style.value), injectRange, { undoStopBefore: false, undoStopAfter: false });
+};
+
+export const insertSnippetByPosition = (style: string, position: Position) => {
+  // vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString('\n' + style.value + '\n'), new vscode.Position(style.endLine + 1, 0));
+  const {start, end} = position;
+  const injectRange = new vscode.Range(start, 0, end, 0);
+
+  vscode.window.activeTextEditor.insertSnippet(new vscode.SnippetString(style), injectRange, { undoStopBefore: false, undoStopAfter: false });
 };
