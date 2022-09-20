@@ -133,7 +133,7 @@ export default async function generateStyleTree() {
 
     const { class: staticClass, ':class': bindingClass } = attrsMap;
 
-    const children = ast.children.map((child: any) => filterAst(child)).filter((child: any) => child);;
+    const children = ast.children.map((child: any) => filterAst(child)).filter((child: any) => child);
 
     return {
       tag,

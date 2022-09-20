@@ -96,10 +96,11 @@ export default async function autoDarkMode() {
     '@light_aaa': '@l-grey-600',
     '@light_c7c': '@l-grey-500',
     '@light_12a': '@l-boss-700',
+    '@l-white': '@l-white-100'
   };
 
   // 根据replaceColorMap生成正则，替换字符串中对应的色值
-  const replaceReg = new RegExp(Object.keys(replaceColorMap).join('|'), 'g');
+  const replaceReg = new RegExp(Object.keys(replaceColorMap).join('|') + '(?!-)', 'g'); // (?!-) 防止匹配到@l-white-xxx
   const replaceColor = (str: string) => str.replace(replaceReg, (matched) => replaceColorMap[matched]);
 
   const cc = new ColorConverter({ colorMap });
