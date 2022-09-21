@@ -125,7 +125,7 @@ export default async function generateStyleTree() {
 
   // 3. 遍历 ast 进行剪枝，只保留具有class相关属性
   const filterAst = (ast: any) => {
-    if (ast.type !== 1) {
+    if (ast.type !== 1 || !ast.classBinding) {
       return null;
     }
 
@@ -150,16 +150,17 @@ export default async function generateStyleTree() {
   const handleAst = (ast: any) => {
     const { tag, staticClass, bindingClass, children } = ast;
 
-    const classArray = parseStaticClass(staticClass);
+    // const classArray = parseStaticClass(staticClass);
     const bindingClassArray = parseBindingClass(bindingClass);
 
-    const newClassArray = [ ...classArray, ...bindingClassArray ];
+    const newClassArray = [ ...bindingClassArray ];
 
     const newChildren = children.map((child: any) => handleAst(child));
 
-    const selector = newClassArray[0] ? `.${newClassArray[0]}` : tag;
+    const selector = newClassArray[0] ? `.${newClassArray[0]}` : '';
 
     return {
+      id: Math.random(),
       tag,
       class: newClassArray,
       children: newChildren,
@@ -169,6 +170,67 @@ export default async function generateStyleTree() {
 
   const handledAst = handleAst(filteredAst);
   console.log('handledAst', handledAst);
+
+  const filterAstAgain = (ast: any) => {
+    if (!ast.selector) {
+      return null;
+    }
+
+    const children = ast.children.map((child: any) => filterAstAgain(child)).filter((child: any) => child);
+
+    return {
+      ...ast,
+      children,
+    };
+  };
+
+  const finalAst = filterAstAgain(handledAst);
+
+  const findDuplicateSubtrees = (root: any) => {
+    const map = new Map();
+    const res: string[] = [];
+    function dfs(root: any) {
+        if (!root) {
+            return '#';
+        };
+        let childStr = root.children.map(dfs).join(',');
+        let str = root.class.join(',') + ',' + childStr;
+        if (map.has(str)) {
+            let node = map.get(str);
+            if (node === 1) {
+                res.push(root);
+                map.set(str, 2);
+            }
+        } else {
+            map.set(str, 1);
+        }
+        return str;
+    }
+    dfs(root);
+    return res;
+  };
+
+  const duplicate = findDuplicateSubtrees(finalAst);
+  console.log('findDuplicateSubtrees', duplicate);
+
+  function getPaths(obj: any) {
+    const paths = [];
+    const { selector, children } = obj;
+    if (children && children.length) {
+      children.forEach((child: any) => {
+        const childPaths = getPaths(child);
+        childPaths.forEach((childPath) => {
+          paths.push(`${selector}${childPath}`);
+        });
+      });
+    } else {
+      paths.push(selector);
+    }
+    return paths;
+  }
+
+  const paths = duplicate.map(getPaths);
+  console.log('paths', paths);
 
   // 5. 遍历根据 selector 生成 style string
   const generateStyleStr = (ast: any, indentLevel = 0) => {
@@ -181,11 +243,14 @@ export default async function generateStyleTree() {
 
     const indent = '\t'.repeat(indentLevel);
 
-    return ['', `${selector} {`, childrenStr, `}`].join(`\n${indent}`);
+    return ['', `\n${indent}`, `${selector} {`, `\n${indent}\t`, childrenStr, `\n${indent}`, `}`].join(``);
   };
 
-  const styleStr = generateStyleStr(handledAst);
-  console.log(styleStr);
+  const styleStr = generateStyleStr(finalAst);
+  // console.log(styleStr);
+  const duplicateStr = duplicate.map((item: any) => generateStyleStr(item));
+  console.log(duplicateStr);
+
 
   // 6. 确定最终插入的文本及位置
   const injectStyle = styleStr.replace(/^\n/, '') + '\n';
