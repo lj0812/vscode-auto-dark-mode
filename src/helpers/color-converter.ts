@@ -57,6 +57,6 @@ export default class ColorConverter {
   public convert(colorStr: string) {
     return colorStr
       .replaceAll(/#([a-f0-9]{6}|[a-f0-9]{3})/ig, (hex) => this.replaceHex(hex))
-      .replaceAll(/rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)/ig, rgba => this.replaceRgba(rgba));
+      .replaceAll(/rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,}))?\)/ig, rgba => this.replaceRgba(rgba));
   }
 }

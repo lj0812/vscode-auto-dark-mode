@@ -4,7 +4,7 @@ export const isHexColor = (color: string) => {
 };
 
 export const isRgbColor = (color: string) => {
-  return /rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)/i.test(color);
+  return /rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,}))?\)/i.test(color);
 };
 
 export const includeColor = (color: string) => {
@@ -25,7 +25,7 @@ export const formatPercent = (num: number) => {
  * @returns {Object}
  */
 export const parseRgbaStr = (rgbaStr: string) => {
-  let [, r, g, b, a] = rgbaStr.match(/^rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,3}))?\)$/i);
+  let [, r, g, b, a] = rgbaStr.match(/^rgba?\(([0-9]{1,3}), *([0-9]{1,3}), *([0-9]{1,3})(?:, *([0-9.]{1,}))?\)$/i);
 
   const result: RgbaColor = {
     r: parseInt(r),
