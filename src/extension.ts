@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import autoDarkMode from './commands/auto-dark-mode';
 import replaceColor from './commands/replace-color';
 import generateStyleTree from './commands/generate-style-tree';
+import customComment from './commands/custom-comment';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -29,7 +30,12 @@ export function activate(context: vscode.ExtensionContext) {
 		generateStyleTree();
 	});
 
-	context.subscriptions.push(disposable, disposable2, disposable3);
+	// 自定义注释功能
+	const disposable4 = vscode.commands.registerCommand('boss.custom-comment', () => {
+		customComment();
+	});
+
+	context.subscriptions.push(disposable, disposable2, disposable3, disposable4);
 }
 
 // this method is called when your extension is deactivated

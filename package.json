@@ -14,7 +14,8 @@
   "activationEvents": [
     "onCommand:boss.auto-dark-mode",
     "onCommand:boss.replace-color",
-    "onCommand:boss.generate-style-tree"
+    "onCommand:boss.generate-style-tree",
+    "onCommand:boss.custom-comment"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -56,6 +57,18 @@
         "command": "boss.generate-style-tree",
         "title": "Generate Style Tree",
         "icon": "$(icon-magic)"
+      },
+      {
+        "command": "boss.custom-comment",
+        "title": "Custom Comment"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "boss.custom-comment",
+        "key": "ctrl+.",
+        "mac": "cmd+.",
+        "when": "editorTextFocus"
       }
     ],
     "menus": {
