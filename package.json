@@ -15,7 +15,8 @@
     "onCommand:boss.auto-dark-mode",
     "onCommand:boss.replace-color",
     "onCommand:boss.generate-style-tree",
-    "onCommand:boss.custom-comment"
+    "onCommand:boss.custom-comment",
+    "onCommand:boss.findString"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -61,6 +62,10 @@
       {
         "command": "boss.custom-comment",
         "title": "Custom Comment"
+      },
+      {
+        "command": "boss.findString",
+        "title": "findString"
       }
     ],
     "keybindings": [
