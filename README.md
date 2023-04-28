@@ -10,7 +10,7 @@
       // .vscode/settings.json
 
       {
-        "bs.css.variables": "path/to/your/variables/files",
+        "boss.css.variables": "path/to/your/variables/files",
       }
     ```
 
@@ -34,6 +34,10 @@
 
 1. 点击工具栏 ![icon-magic.png](https://img.bosszhipin.com/static/file/2022/ctpn9qy8p01663578433077.png)
 2. 命令方式 cmd + shift + p，然后搜索 Generate Style Tree 执行
+
+### 4. 自定义注释，针对Typescript生成 /**  */ 注释
+
+`com` + `.` 快捷键：生成/取消行注释
 
 ## 其他情况
 
@@ -109,7 +113,7 @@
 /* auto injected by auto-dark-mode end */
 ```
 
-如果想保留所有色值需配置 `bs.css.saveUnconvertedColor: true`，配置后将保留原色值
+如果想保留所有色值需配置 `boss.css.saveUnconvertedColor: true`，配置后将保留原色值
 
 ``` less
 .btn{

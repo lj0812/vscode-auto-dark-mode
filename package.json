@@ -74,21 +74,51 @@
     "menus": {
       "editor/title": [
         {
-          "when": "editorLangId == vue",
+          "when": "editorLangId == vue && config.boss.generate-style.enable",
           "command": "boss.generate-style-tree",
           "group": "navigation@-3"
         },
         {
-          "when": "editorLangId == vue",
+          "when": "editorLangId == vue && config.boss.replace-color.enable",
           "command": "boss.replace-color",
           "group": "navigation@-2"
         },
         {
-          "when": "editorLangId == vue",
+          "when": "editorLangId == vue && config.boss.dark.enable",
           "command": "boss.auto-dark-mode",
           "group": "navigation@-1"
         }
       ]
+    },
+    "configuration": {
+      "title": "Boss",
+      "properties": {
+        "boss.generate-style.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否显示生成class树按钮"
+        },
+        "boss.replace-color.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否显示替换颜色按钮"
+        },
+        "boss.dark.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否显示自动切换暗黑模式按钮"
+        },
+        "boss.css.variables": {
+          "type": "string",
+          "default": "",
+          "description": "变量文件路径，多个文件用逗号隔开"
+        },
+        "boss.css.saveUnconvertedColor": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否保留未转换的颜色"
+        }
+      }
     }
   },
   "scripts": {

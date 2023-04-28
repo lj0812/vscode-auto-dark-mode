@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
-const THEME_FILE_PATH = 'bs.css.variables';
-const SAVE_UNCONVERTED_COLOR = 'bs.css.saveUnconvertedColor';
+const THEME_FILE_PATH = 'boss.css.variables';
+const SAVE_UNCONVERTED_COLOR = 'boss.css.saveUnconvertedColor';
 
 export const getThemePathConfig = (): string => {
   const config: string = vscode.workspace.getConfiguration().get(THEME_FILE_PATH) || '';
