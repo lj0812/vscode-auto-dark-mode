@@ -136,7 +136,7 @@ function toggleComment(languageId: string) {
   const distanceToLineEnd = text.length - column;
 
   // 获取第一个非空字符的位置
-  const firstNonWhitespaceCharacterIndex = Math.max(text.search(/\S/), 0);
+  const startColumn = text.trim().length === 0 ? column : Math.max(text.search(/\S/), 0);
 
   // 注释符号名称
   const delimiterName = languageIdMap[languageId];
@@ -151,18 +151,18 @@ function toggleComment(languageId: string) {
   const handledText = textHandleFn(text.trimStart(), delimiter);
 
   // 计算插入注释后的文本末尾位置
-  const endColumn = firstNonWhitespaceCharacterIndex + handledText.length;
+  const endColumn = startColumn + handledText.length;
 
   // 插入注释
   editor.edit((editBuilder) => {
     // 删除当前行的文本
     editBuilder.delete(new vscode.Range(
-      new vscode.Position(line, firstNonWhitespaceCharacterIndex),
+      new vscode.Position(line, startColumn),
       new vscode.Position(line, text.length),
     ));
 
     // 插入注释
-    editBuilder.insert(new vscode.Position(line, firstNonWhitespaceCharacterIndex), handledText);
+    editBuilder.insert(new vscode.Position(line, startColumn), handledText);
   });
 
   const cursorGap = commentCursorOffsetMap[delimiterName];
