@@ -1,6 +1,6 @@
 {
   "name": "bs-auto-dark-mode",
-  "displayName": "auto dark mode",
+  "displayName": "Friday",
   "description": "",
   "version": "0.1.8",
   "publisher": "ColoryPanda",
@@ -16,7 +16,9 @@
     "onCommand:boss.replace-color",
     "onCommand:boss.generate-style-tree",
     "onCommand:boss.custom-comment",
-    "onCommand:boss.findString"
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onLanguage:vue"
   ],
   "main": "./dist/extension.js",
   "contributes": {
