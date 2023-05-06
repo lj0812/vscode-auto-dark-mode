@@ -2,7 +2,7 @@
   "name": "bs-auto-dark-mode",
   "displayName": "Friday",
   "description": "",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "publisher": "ColoryPanda",
   "icon": "src/assets/images/icon.png",
   "engines": {
