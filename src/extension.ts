@@ -5,7 +5,8 @@ import autoDarkMode from './commands/auto-dark-mode';
 import replaceColor from './commands/replace-color';
 import generateStyleTree from './commands/generate-style-tree';
 import customComment from './commands/custom-comment';
-import YapiProvider from './commands/search-api';
+import YapiProvider, { yapiCommand } from './commands/search-api';
+import * as api from './apis/index';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -39,13 +40,12 @@ export function activate(context: vscode.ExtensionContext) {
 	// yapi相关
 	const yapiProvider = new YapiProvider();
 
-	const providerRegistrations = vscode.Disposable.from(
-		vscode.languages.registerDocumentLinkProvider({ scheme: YapiProvider.scheme }, yapiProvider),
-		// vscode.languages.registerDocumentLinkProvider({ scheme: YapiProvider.scheme, language: 'javascript' }, new YapiProvider()),
-		// vscode.languages.registerDocumentLinkProvider({ scheme: YapiProvider.scheme, language: 'typescript' }, new YapiProvider()),
-		// vscode.languages.registerDocumentLinkProvider({ language: 'javascript' }, new YapiProvider()),
-		// vscode.languages.registerDocumentLinkProvider({ language: 'typescript' }, new YapiProvider())
+	const yapiProviderRegistration = vscode.languages.registerDocumentLinkProvider(
+		{ scheme: YapiProvider.scheme },
+		yapiProvider
 	);
+
+	const yapiCommandRegistration = vscode.commands.registerCommand(yapiCommand.command, yapiCommand.callback(context));
 
 	function testProvider() {
 		const editor = vscode.window.activeTextEditor;
@@ -107,12 +107,13 @@ export function activate(context: vscode.ExtensionContext) {
 			const docUri = activeEditor.document.uri;
 			console.log(docUri.scheme);
 		}
-  });
+	});
 
 	context.subscriptions.push(
 		disposable, disposable2, disposable3, disposable4, disposable5,
 		yapiProvider,
-		providerRegistrations
+		yapiProviderRegistration,
+		yapiCommandRegistration
 	);
 }
 

@@ -20,21 +20,26 @@ export const getWorkspaceRoot = () => {
 };
 
 export const getThemeFileContent = () => {
-  const pathStr = getThemePathConfig();
+  try {
+    const pathStr = getThemePathConfig();
 
-  const paths = pathStr.split(',');
-  const root = getWorkspaceRoot();
+    const paths = pathStr.split(',');
+    const root = getWorkspaceRoot();
 
-  const result = paths
-    .map(_ => {
-      const fsPath = path.resolve(root, _);
-      const content = fs.readFileSync(fsPath, { encoding: 'utf-8' });
+    const result = paths
+      .map(_ => {
+        const fsPath = path.resolve(root, _);
+        const content = fs.readFileSync(fsPath, { encoding: 'utf-8' });
 
-      return content;
-    })
-    .join('\n');
+        return content;
+      })
+      .join('\n');
 
-  return result;
+    return result;
+  } catch (error) {
+    vscode.window.showErrorMessage('CSS变量文件目录不正确');
+    return '';
+  }
 };
 
 export const insertSnippet = (style: VueComplierStyle) => {

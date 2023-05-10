@@ -17,3 +17,8 @@ export const getSaveUnconvertedColorConfig = (): boolean => {
   const config: boolean = vscode.workspace.getConfiguration().get(SAVE_UNCONVERTED_COLOR) || false;
   return config;
 };
+
+export const getConfig = (key: string) => {
+  const config = vscode.workspace.getConfiguration().get(key);
+  return config;
+};
