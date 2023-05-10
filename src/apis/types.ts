@@ -2,6 +2,6 @@
 // 用于声明接口的类型
 // key: string
 // value: (params: any) => Promise<any>
-interface Api {
+export interface Api {
   [key: string]: (params: any) => Promise<any>;
 }

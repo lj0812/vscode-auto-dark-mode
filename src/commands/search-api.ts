@@ -2,16 +2,34 @@ import * as vscode from 'vscode';
 import { getConfig } from '../helpers/config.vscode';
 import api from '../apis';
 
-const yapiHost = 'https://api.weizhipin.com';
-const yapiSearchUrl = `${yapiHost}/common-page`;
+const YAPI_HOST = 'https://api.weizhipin.com';
+const YAPI_SEARCH_RUL = `${YAPI_HOST}/common-page`;
+
+const YAPI_UID_KEY = 'boss.yapi.uid';
+const YAPI_TOKEN_KEY = 'boss.yapi.token';
+const NO_YAPI_ERROR_MESSAGE = `请配置 ${YAPI_UID_KEY} 和 ${YAPI_TOKEN_KEY}`;
+
+const checkYapiConfig = () => {
+  const yapiUid = getConfig(YAPI_UID_KEY);
+  const yapiToken = getConfig(YAPI_TOKEN_KEY);
+
+  if (!yapiUid || !yapiToken) {
+    vscode.window.showErrorMessage(NO_YAPI_ERROR_MESSAGE);
+    return false;
+  }
+
+  return true;
+};
 
 const openYapiBrowser = (link: vscode.DocumentLink, path: string) => {
+  if (!checkYapiConfig()) { return; }
+
   return api.searchApi({ q: path })
     .then((res: any) => {
       if (res.interface.length > 0) {
         const { _id, projectId } = res.interface[0];
 
-        const result = vscode.Uri.parse(`${yapiHost}/project/${projectId}/interface/api/${_id}`);
+        const result = vscode.Uri.parse(`${YAPI_HOST}/project/${projectId}/interface/api/${_id}`);
         link.target = result;
         return link;
       }
@@ -84,17 +102,7 @@ const createYapiCommand = (context: vscode.ExtensionContext) => {
 
 
   return (link: vscode.DocumentLink | string): undefined => {
-    console.log('openYapiWebView', link);
-    const yapiUid = getConfig('boss.yapi.uid');
-    const yapiToken = getConfig('boss.yapi.token');
-
-    console.log('yapiUid--', yapiUid);
-    console.log('yapiToken--', yapiToken);
-
-    if (!yapiUid || !yapiToken) {
-      vscode.window.showErrorMessage('请配置yapi uid和token');
-      return;
-    }
+    if (!checkYapiConfig()) { return; }
 
     if (currentPanel) {
       currentPanel.reveal(vscode.ViewColumn.One);
@@ -159,7 +167,7 @@ export default class Provider implements vscode.DocumentLinkProvider {
       this._pathMap.set(range, match[0]);
 
       const link = new vscode.DocumentLink(range);
-      // const link = new vscode.DocumentLink(range, vscode.Uri.parse(`${yapiSearchUrl}?url=${match[0]}`));
+      // const link = new vscode.DocumentLink(range, vscode.Uri.parse(`${YAPI_SEARCH_RUL}?url=${match[0]}`));
       links.push(link);
     }
 
