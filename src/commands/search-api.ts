@@ -3,6 +3,7 @@ import { getConfig } from '../helpers/config.vscode';
 import api from '../apis';
 
 const YAPI_HOST = 'https://api.weizhipin.com';
+
 const YAPI_SEARCH_RUL = `${YAPI_HOST}/common-page`;
 
 const YAPI_UID_KEY = 'boss.yapi.uid';
@@ -166,8 +167,8 @@ export default class Provider implements vscode.DocumentLinkProvider {
 
       this._pathMap.set(range, match[0]);
 
-      const link = new vscode.DocumentLink(range);
-      // const link = new vscode.DocumentLink(range, vscode.Uri.parse(`${YAPI_SEARCH_RUL}?url=${match[0]}`));
+      // const link = new vscode.DocumentLink(range);
+      const link = new vscode.DocumentLink(range, vscode.Uri.parse(`${YAPI_SEARCH_RUL}?url=${match[0]}`));
       links.push(link);
     }
 
