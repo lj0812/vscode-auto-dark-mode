@@ -148,4 +148,4 @@
 
 匹配到接口路径后可以点击跳转至Yapi接口详情页
 
-![src/assets/images/yapi-link.png](https://github.com/lj0812/vscode-auto-dark-mode/blob/main/src/assets/images/yapi-link.png)
+![src/assets/images/yapi-link.png](https://raw.githubusercontent.com/lj0812/vscode-auto-dark-mode/main/src/assets/images/yapi-link.png)
