@@ -4,6 +4,7 @@
   "description": "",
   "version": "1.0.3",
   "publisher": "ColoryPanda",
+  "repository": "https://github.com/lj0812/vscode-auto-dark-mode",
   "icon": "src/assets/images/icon.png",
   "engines": {
     "vscode": "^1.75.0"
