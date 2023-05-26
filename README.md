@@ -2,7 +2,7 @@
 
 > 在Friday的帮助下，让你的工作充满星期五的快乐！
 
-## 暗黑相关功能
+## 功能一：暗黑相关功能
 
 ### 0. 配置参数
 
@@ -128,6 +128,24 @@
 /* auto injected by auto-dark-mode end */
 ```
 
-## 自定义注释，针对Typescript生成 /**  */ 注释
+## 功能二：自定义注释，针对Typescript生成 /**  */ 注释
 
 `com` + `.` 快捷键：生成/取消行注释
+
+## 功能三：接口地址跳转Yapi详情页
+
+接口地址匹配规则：
+
+``` js
+/(?<=(['`"]))(\/[a-zA-Z0-9\-]+){2,}(?:.json)?(?=\1)/g
+
+# 将匹配以下
+
+"/wapi/path/to/function"
+"/wapi/path/to/function.json"
+'/wapi/path/to/function.json'
+```
+
+匹配到接口路径后可以点击跳转至Yapi接口详情页
+
+![example](./src/assets/images/yapi-link.png)
