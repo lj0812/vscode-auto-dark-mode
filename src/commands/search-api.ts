@@ -156,7 +156,7 @@ export default class Provider implements vscode.DocumentLinkProvider {
     const text = document.getText();
 
     const links: vscode.DocumentLink[] = [];
-    const rulPathRegexp = /(?<=(['`"]))(\/[a-zA-Z0-9\-]+){2,}(?:.json)?(?=\1)/g;
+    const rulPathRegexp = /(?<=(['`"]))(\/[a-zA-Z0-9\-_]+){2,}(?:.json)?(?=\1)/g;
     let match;
 
     // 匹配所有接口路径
