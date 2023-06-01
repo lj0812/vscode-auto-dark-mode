@@ -84,7 +84,6 @@ const Plugin = (options: Options) => {
     // Will be called on Root node once.
     // Type: RootProcessor.
     Once(root: Root) {
-      console.log('root', JSON.parse(JSON.stringify(root)));
       root.walkComments(comment => {
         if (comment.text.includes(DISABLE_FLAG)) {
           comment.next().remove();

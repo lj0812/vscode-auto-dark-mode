@@ -5,7 +5,7 @@ import autoDarkMode from './commands/auto-dark-mode';
 import replaceColor from './commands/replace-color';
 import generateStyleTree from './commands/generate-style-tree';
 import customComment from './commands/custom-comment';
-import YapiProvider, { yapiCommand } from './commands/search-api';
+import YapiProvider, { yapiCommand, generateDTS } from './commands/search-api';
 import * as api from './apis/index';
 
 // this method is called when your extension is activated
@@ -14,7 +14,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "bs-auto-dark-mode" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -46,13 +45,15 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	const yapiCommandRegistration = vscode.commands.registerCommand(yapiCommand.command, yapiCommand.callback(context));
+	const yapiCommandRegistration2 = vscode.commands.registerCommand('boss.generate-dts', () => {
+		generateDTS();
+	});
 
 	function testProvider() {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
 			const provider = new YapiProvider();
 			const links = provider.provideDocumentLinks(editor.document);
-			console.log(links);
 		}
 	}
 
@@ -105,7 +106,6 @@ export function activate(context: vscode.ExtensionContext) {
 		const activeEditor = vscode.window.activeTextEditor;
 		if (activeEditor) {
 			const docUri = activeEditor.document.uri;
-			console.log(docUri.scheme);
 		}
 	});
 
@@ -113,7 +113,8 @@ export function activate(context: vscode.ExtensionContext) {
 		disposable, disposable2, disposable3, disposable4, disposable5,
 		yapiProvider,
 		yapiProviderRegistration,
-		yapiCommandRegistration
+		yapiCommandRegistration,
+		yapiCommandRegistration2
 	);
 }
 

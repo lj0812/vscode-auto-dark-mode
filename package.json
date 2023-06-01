@@ -1,7 +1,7 @@
 {
   "name": "bs-auto-dark-mode",
   "displayName": "Friday​",
-  "description": "",
+  "description": "在Friday的帮助下，让你的工作充满星期五的快乐！",
   "version": "1.0.6",
   "publisher": "ColoryPanda",
   "repository": "https://github.com/lj0812/vscode-auto-dark-mode",
@@ -65,12 +65,12 @@
         "title": "Custom Comment"
       },
       {
-        "command": "boss.findString",
-        "title": "findString"
-      },
-      {
         "command": "boss.open-yapi",
         "title": "Open Yapi"
+      },
+      {
+        "command": "boss.generate-dts",
+        "title": "generate d.ts文件"
       }
     ],
     "keybindings": [
@@ -79,6 +79,12 @@
         "key": "ctrl+.",
         "mac": "cmd+.",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "boss.generate-dts",
+        "key": "ctrl+[Semicolon]",
+        "mac": "cmd+[Semicolon]",
+        "when": "editorTextFocus && editorLangId == typescript"
       }
     ],
     "menus": {
@@ -137,6 +143,46 @@
           "type": "string",
           "default": "",
           "description": "yapi token"
+        },
+        "boss.dts.generate": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否生成d.ts文件"
+        },
+        "boss.dts.generateMode": {
+          "type": "string",
+          "enum": [
+            "sameName",
+            "unified",
+            "directory",
+            "custom"
+          ],
+          "default": "directory",
+          "description": "d.ts文件存放位置",
+          "enumDescriptions": [
+            "将在同级目录下生成与源文件同名的类型声明文件",
+            "将在同级目录下生成一个名为 types.d.ts 的类型声明文件",
+            "首先在同级目录下创建一个名为 types 的目录，然后在该目录下生成与源文件同名的类型声明文件",
+            "指定一个目录，并为每个源文件单独命名并生成对应的类型声明文件"
+          ]
+        },
+        "boss.dts.customPath": {
+          "type": "string",
+          "default": "src/types/apis",
+          "description": "自定义d.ts文件存放路径"
+        },
+        "boss.dts.customMethod": {
+          "type": "string",
+          "enum": [
+            "interface",
+            "unified"
+          ],
+          "default": "unified",
+          "description": "自定义d.ts文件生成规则",
+          "enumDescriptions": [
+            "根据接口组织目录",
+            "统一生成一个文件"
+          ]
         }
       }
     }

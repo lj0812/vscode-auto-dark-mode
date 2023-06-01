@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { stringify } from 'qs';
 import { getConfig } from '../../helpers/config.vscode';
+import * as vscode from 'vscode';
 
 import {
     CONTENT_TYPE_JSON,
@@ -41,8 +42,6 @@ axios.interceptors.request.use(
             config.headers['Cookie'] = `_yapi_uid=${yapiUid}; _yapi_token=${yapiToken}`;
         }
 
-        console.log('config', config);
-
         return config;
     },
     (error: AxiosError) => {
@@ -54,7 +53,7 @@ axios.interceptors.request.use(
 // 响应拦截器
 axios.interceptors.response.use(
     (response: AxiosResponse) => {
-        console.log('response raw', response);
+        // console.log('response raw', response);
         if (response.status !== 200) {
             return Promise.reject(response);
         }
@@ -74,7 +73,6 @@ export const request = (url: string, method: Method, config: AxiosRequestConfig)
 
     return axios.request({ ...payload })
         .then(response => {
-            console.log('response', response);
             const { data } = response;
 
             if (!data) {return Promise.reject({ message: EMPTY_RESPONSE_ERROR_MESSAGE });};
@@ -102,6 +100,9 @@ export const request = (url: string, method: Method, config: AxiosRequestConfig)
         })
         .catch(error => {
             console.log('error', error);
+            if (error.errcode === 40011) {
+                vscode.window.showErrorMessage('yapi token 已过期，请重新设置');
+            }
             return Promise.reject(error);
         });
 };
