@@ -212,6 +212,28 @@ const getResBodyByPath = async (path: string) => {
   }
 };
 
+const getDtsContent = (resJson: string) => {
+  const dtsDom = $dts(resJson);
+
+  const dts = dtsDom
+    .replace(/<br\s?\/?>/g, '\n')
+    .replace(/&nbsp;&nbsp;/g, '  ')
+    .replace(/<\/?[^>]*>/g, '');
+
+  const dtsArr = dts.split('\n\n');
+  const finalDtsArr = dtsArr.length === 1 ? dtsArr : dtsArr.slice(1);
+  const finalDts = finalDtsArr.join('\n\n').trim();
+
+  const reg = /(?<=interface\s)[^ ]*/;
+
+  const match = reg.exec(finalDtsArr[0] || '');
+
+  return {
+    dts: finalDts,
+    first: match?.[0] || ''
+  };
+};
+
 // 处理path,拆分不同部分
 const handlePath = (path: string) => {
   const pathArr = path.split('/').filter(Boolean);
@@ -364,47 +386,31 @@ export async function generateDTS() {
   const interfacePath = match[0];
 
   // loading
-  let loading: null | { cancel: () => void } = null;
-  vscode.window.withProgress({
+  const resBody = await vscode.window.withProgress({
     location: vscode.ProgressLocation.Notification,
     title: '正在生成dts...',
-    cancellable: false
+    cancellable: true
   }, (progress, token) => {
     token.onCancellationRequested(() => {
       vscode.window.showInformationMessage('已取消');
     });
 
-    const p = new Promise<void>(async resolve => {
-      loading = { cancel: resolve };
-    });
-
-    return p;
+    return getResBodyByPath(interfacePath);
   });
-  // 3、获取接口数据
-  const resBody = await getResBodyByPath(interfacePath);
-
-  if (loading) {
-    loading.cancel();
-  }
-
 
   if (!resBody) {
     vscode.window.showErrorMessage('未找到接口数据');
     return;
   }
-  const dtsDom = $dts(resBody);
+  const { dts, first } = getDtsContent(resBody);
 
-  const dts = dtsDom
-    .replace(/<br\s?\/?>/g, '\n')
-    .replace(/&nbsp;&nbsp;/g, '  ')
-    .replace(/<\/?[^>]*>/g, '');
-
-  const dtsArr = dts.split('\n\n');
-  const finalDtsArr = dtsArr.length === 1 ? dtsArr : dtsArr.slice(1);
-  const finalDts = finalDtsArr.join('\n\n').trim();
+  if (!dts) {
+    vscode.window.showErrorMessage('未找到接口声明');
+    return;
+  }
 
   // 将dts写入剪切板
-  vscode.env.clipboard.writeText(finalDts);
+  vscode.env.clipboard.writeText(dts);
   vscode.window.showInformationMessage('dts已复制到剪切板');
 
   // 4、处理dts
@@ -417,7 +423,7 @@ export async function generateDTS() {
   // 5、将接口声明替换为接口名称
   const { t } = handlePath(interfacePath);
   editor.edit((editBuilder) => {
-    editBuilder.replace(selection, `<${t}>`);
+    editBuilder.replace(selection, `<${t}.${first}>`);
   });
 
   // 6、写入dts文件
@@ -449,7 +455,7 @@ export async function generateDTS() {
   }
 
   // 生成写入dts内容
-  const content = generateDtsContent(t, finalDts);
+  const content = generateDtsContent(t, dts);
 
   // 后台静默将内容追加到文件末尾，并格式化
   const dtsEditor = await vscode.window.showTextDocument(targetUri, { preserveFocus: true });
