@@ -152,7 +152,77 @@
 
 ## 功能四：获取接口声明并传入接口泛型
 
-功能说明：
+前置条件：需配置 `boss.yapi.uid` 和 `boss.yapi.token`
+
+![src/assets/images/yapi-link.png](https://raw.githubusercontent.com/lj0812/vscode-auto-dark-mode/main/src/assets/images/yapi-tips.png)
+
+使用方法：在需要插入泛型的地方 `cmd + ;` 生成
+
+> 注意：目前需要光标所在行包含接口地址
+
+举例说明
+
+``` ts
+// 在get方法后增加泛型
+// 文件地址：path/to/your/api/index.ts
+export const getAppGroupList = (params: unknown) => {
+    return get('/wapi/zpapmadmin/application/groupList', params)
+}
+
+// 操作步骤
+// 1、光标放置在 get 和 ( 之间，按快捷键「 cmd ; 」之后将自动生成
+export const getAppGroupList = (params: unknown) => {
+    return get<WAPI.Zpapmadmin.application.groupList.ZpData>('/wapi/zpapmadmin/application/groupList', params)
+}
+
+// 2、同时会自动生成声明文件（声明文件放置位置及规则，参考下面配置）
+// 默认生成地址：path/to/your/api/types/index.d.ts
+declare namespace WAPI.Zpapmadmin.application.groupList {
+  interface ZpData {
+    result: Result1[];
+  }
+
+  interface Result1 {
+    appGroup: string;
+    apps: Apps[];
+  }
+
+  interface Apps {
+    id: number;
+    appName: string;
+  }
+}
+
+// 3、如果声明文件放置位置及规则不符合你的要求，你可以直接关闭 `boss.dts.generate` 配置，
+// 在按快捷键的时候我会存一份声明到你的剪贴板，你可以直接粘贴在你需要的地方
+
+// 4、泛型生效需要你自己改造你的接口方法使其接收泛型变量，比如
+interface ApiResponse<T> {
+    /** code */
+    code: number,
+    /** 信息 */
+    message: string,
+    /** 响应数据 */
+    zpData: T,
+}
+
+export async function request<T>(payload: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    try {
+        const response = await axios.request({ ...payload })
+
+        // ...
+
+        return response.data.zpData
+    } catch (error) {
+        // ...
+    }
+}
+
+export const get = <T>(url: string, params: unknown = {}, config: AxiosRequestConfig = {}) => {
+    config = { method: 'get', url, params, ...config }
+    return request<T>(config)
+}
+```
 
 ### 生成 TypeScript 类型声明文件
 
