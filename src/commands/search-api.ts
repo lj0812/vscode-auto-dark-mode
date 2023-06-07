@@ -257,7 +257,16 @@ const handlePath = (path: string) => {
   };
 };
 
-const getDtsFilePath = (path: string, currentFilePath: string, { generateMode = 'directory', customPath = 'src/types/apis', customMethod = 'unified' }) => {
+const getDtsFilePath = (
+  path: string,
+  currentFilePath: string,
+  {
+    generateMode = 'directory',
+    customPath = 'src/types/apis',
+    customMethod = 'unified',
+    dirSeparator = '-'
+  }
+) => {
   const { prefix, project, paths } = handlePath(path);
 
   const rootUri = vscode.workspace.workspaceFolders?.[0].uri;
@@ -299,6 +308,7 @@ const getDtsFilePath = (path: string, currentFilePath: string, { generateMode = 
   }
 
   let dtsFilePath = '';
+
   switch (generateMode) {
     case 'sameName':
       dtsFilePath = `${currentDirPath}/${currentFileNameWithoutSuffix}.d.ts`;
@@ -312,7 +322,7 @@ const getDtsFilePath = (path: string, currentFilePath: string, { generateMode = 
     case 'custom':
       switch (customMethod) {
         case 'interface':
-          dtsFilePath = `${customPath}/${prefix}_${project}/${paths[0]}.d.ts`;
+          dtsFilePath = `${customPath}/${prefix}${dirSeparator}${project}/${paths[0]}.d.ts`;
           break;
         // case 'file':
         //   dtsFilePath = `${customPath}/${prefix}/${project}/index.d.ts`;
@@ -430,8 +440,9 @@ export async function generateDTS() {
   const generateMode = getConfig('boss.dts.generateMode') as string;
   const customPath = getConfig('boss.dts.customPath') as string;
   const customMethod = getConfig('boss.dts.customMethod') as string;
+  const dirSeparator = getConfig('boss.dts.dirSeparator') as string;
 
-  const { rootUri, dtsFilePath } = getDtsFilePath(interfacePath, document.fileName, { generateMode, customPath, customMethod });
+  const { rootUri, dtsFilePath } = getDtsFilePath(interfacePath, document.fileName, { generateMode, customPath, customMethod, dirSeparator });
   if (!dtsFilePath) {
     return;
   }

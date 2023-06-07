@@ -183,6 +183,11 @@
             "根据接口组织目录",
             "统一生成一个文件"
           ]
+        },
+        "boss.dts.dirSeparator": {
+          "type": "string",
+          "default": "-",
+          "description": "用于customMethod为interface时，目录分隔符"
         }
       }
     }
