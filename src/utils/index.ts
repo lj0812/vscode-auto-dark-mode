@@ -43,4 +43,7 @@ export const rgb2hex = (r: number, g: number, b: number) => {
 };
 
 // 3位hex转6位hex
-export const normalizeHex = (hex: string) => hex.length >=6 ? hex : hex.replace(/[0-9a-f]/ig, match => match.repeat(2));
+export const normalizeHex = (hex: string) => hex.length >= 6 ? hex : hex.replace(/[0-9a-f]/ig, match => match.repeat(2));
+
+// 字符串首字母大写
+export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);

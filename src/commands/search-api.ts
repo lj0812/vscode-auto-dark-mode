@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { getConfig } from '../helpers/config.vscode';
 import api from '../apis';
 import $dts from '../helpers/generate-dts';
+import { capitalize } from '../utils';
 import type { CancellationToken } from 'vscode';
 
 const YAPI_HOST = 'https://api.weizhipin.com';
@@ -235,7 +236,7 @@ const getDtsContent = (resJson: string) => {
 };
 
 // 处理path,拆分不同部分
-const handlePath = (path: string) => {
+const handlePath = (path: string, aliasMap: Record<string, string> = {}) => {
   const pathArr = path.split('/').filter(Boolean);
 
   const [prefix, project, ...paths] = pathArr;
@@ -243,11 +244,16 @@ const handlePath = (path: string) => {
   // prefix 转换成大写
   const prefixUpperCase = prefix.toUpperCase();
   // project 首字母大写
-  const projectUpperCase = project.substring(0, 1).toUpperCase() + project.substring(1);
+  const projectUpperCase = capitalize(project);
   // paths 用.连接
-  const pathsStr = paths.join('.');
+  const pathsStr = capitalize(paths.join('.'));
   // t
-  const t = [prefixUpperCase, projectUpperCase, pathsStr].join('.');
+  let t = [prefixUpperCase, projectUpperCase, pathsStr].join('.');
+
+  const replaceList = Object.entries(aliasMap);
+  replaceList.forEach(([key, value]) => {
+    t = t.replace(key, value);
+  });
 
   return {
     prefix,
@@ -322,7 +328,8 @@ const getDtsFilePath = (
     case 'custom':
       switch (customMethod) {
         case 'interface':
-          dtsFilePath = `${customPath}/${prefix}${dirSeparator}${project}/${paths[0]}.d.ts`;
+          // dtsFilePath = `${customPath}/${prefix}${dirSeparator}${project}/${paths[0]}.d.ts`;
+          dtsFilePath = `${customPath}/${paths[0]}.d.ts`;
           break;
         // case 'file':
         //   dtsFilePath = `${customPath}/${prefix}/${project}/index.d.ts`;
@@ -431,7 +438,9 @@ export async function generateDTS() {
   }
 
   // 5、将接口声明替换为接口名称
-  const { t } = handlePath(interfacePath);
+  const alias = getConfig('boss.dts.alias');
+
+  const { t } = handlePath(interfacePath, alias as Record<string, string>);
   editor.edit((editBuilder) => {
     editBuilder.replace(selection, `<${t}.${first}>`);
   });

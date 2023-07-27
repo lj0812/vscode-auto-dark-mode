@@ -188,6 +188,11 @@
           "type": "string",
           "default": "-",
           "description": "用于customMethod为interface时，目录分隔符"
+        },
+        "boss.dts.alias": {
+          "type": "object",
+          "default": {},
+          "description": "自定义d.ts文件内声明别名"
         }
       }
     }
