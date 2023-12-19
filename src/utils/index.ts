@@ -1,4 +1,6 @@
 import { RgbaColor } from '../types/index';
+import { getFileIndentation } from '../helpers/config.vscode';
+
 export const isHexColor = (color: string) => {
   return /#([a-f0-9]{6}|[a-f0-9]{3})/i.test(color);
 };
@@ -47,3 +49,7 @@ export const normalizeHex = (hex: string) => hex.length >= 6 ? hex : hex.replace
 
 // 字符串首字母大写
 export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
+export const convertToCamelCase = (input: string) => {
+  return input.replace(/[-_](.)/g, (_, c) => c.toUpperCase());
+};

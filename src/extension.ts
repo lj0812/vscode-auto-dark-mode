@@ -5,6 +5,7 @@ import autoDarkMode from './commands/auto-dark-mode';
 import replaceColor from './commands/replace-color';
 import generateStyleTree from './commands/generate-style-tree';
 import customComment from './commands/custom-comment';
+import generateApi from './commands/generate-api';
 import YapiProvider, { yapiCommand, generateDTS } from './commands/search-api';
 import * as api from './apis/index';
 
@@ -109,12 +110,18 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	// 自动生成api
+	const generateApiCommand = vscode.commands.registerCommand('boss.generate-api', () => {
+		generateApi();
+	});
+
 	context.subscriptions.push(
 		disposable, disposable2, disposable3, disposable4, disposable5,
 		yapiProvider,
 		yapiProviderRegistration,
 		yapiCommandRegistration,
-		yapiCommandRegistration2
+		yapiCommandRegistration2,
+		generateApiCommand
 	);
 }
 

@@ -71,6 +71,10 @@
       {
         "command": "boss.generate-dts",
         "title": "generate d.ts文件"
+      },
+      {
+        "command": "boss.generate-api",
+        "title": "generate api"
       }
     ],
     "keybindings": [
@@ -143,6 +147,11 @@
           "type": "string",
           "default": "",
           "description": "yapi token"
+        },
+        "boss.yapi.projectId": {
+          "type": "string",
+          "default": "",
+          "description": "yapi project id"
         },
         "boss.dts.generate": {
           "type": "boolean",
@@ -232,6 +241,8 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
+    "json-schema-to-typescript": "^13.1.1",
+    "json5": "^2.2.3",
     "qs": "^6.11.1"
   }
 }

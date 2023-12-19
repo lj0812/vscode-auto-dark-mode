@@ -22,3 +22,11 @@ export const getConfig = (key: string) => {
   const config = vscode.workspace.getConfiguration().get(key);
   return config;
 };
+
+/** 获取当前文件的缩进配置 */
+export const getFileIndentation = () => {
+  const editor = vscode.window.activeTextEditor;
+  console.log('editor.options', editor.options);
+  const indentation = editor?.options.tabSize || 2;
+  return indentation;
+};
