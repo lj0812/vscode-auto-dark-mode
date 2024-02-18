@@ -7,120 +7,93 @@ import generateStyleTree from './commands/generate-style-tree';
 import customComment from './commands/custom-comment';
 import generateApi from './commands/generate-api';
 import YapiProvider, { yapiCommand, generateDTS } from './commands/search-api';
-import * as api from './apis/index';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('boss.auto-dark-mode', () => {
-		// The code you place here will be executed every time your command is executed
-		autoDarkMode();
-	});
 
-	const disposable2 = vscode.commands.registerCommand('boss.replace-color', () => {
-		replaceColor();
-	});
+	/**
+	 * 自动切换主题
+	 */
+	const autoDarkModeCommand = vscode.commands.registerCommand(
+		'boss.auto-dark-mode',
+		autoDarkMode
+	);
+	context.subscriptions.push(autoDarkModeCommand);
 
-	const disposable3 = vscode.commands.registerCommand('boss.generate-style-tree', () => {
-		generateStyleTree();
-	});
+	/**
+	 * 替换颜色
+	 */
+	const replaceColorCommand = vscode.commands.registerCommand(
+		'boss.replace-color',
+		replaceColor
+	);
+	context.subscriptions.push(replaceColorCommand);
 
-	// 自定义注释功能
-	const disposable4 = vscode.commands.registerCommand('boss.custom-comment', () => {
-		customComment();
-	});
+	/**
+	 * 生成样式树
+	 */
+	const generateStyleTreeCommand = vscode.commands.registerCommand(
+		'boss.generate-style-tree',
+		generateStyleTree
+	);
+	context.subscriptions.push(generateStyleTreeCommand);
 
-	// yapi相关
+	/**
+	 * 自定义注释
+	 */
+	const customCommentCommand = vscode.commands.registerCommand(
+		'boss.custom-comment',
+		customComment
+	);
+	context.subscriptions.push(customCommentCommand);
+
+
+	/**
+	 * =============================
+	 * yapi相关
+	 * =============================
+	 */
 	const yapiProvider = new YapiProvider();
-
-	const yapiProviderRegistration = vscode.languages.registerDocumentLinkProvider(
+	const yapiLinkProvider = vscode.languages.registerDocumentLinkProvider(
 		{ scheme: YapiProvider.scheme },
 		yapiProvider
 	);
 
-	const yapiCommandRegistration = vscode.commands.registerCommand(yapiCommand.command, yapiCommand.callback(context));
-	const yapiCommandRegistration2 = vscode.commands.registerCommand('boss.generate-dts', () => {
-		generateDTS();
-	});
+	/**
+	 * 打开yapi
+	 */
+	const openYapiCommand = vscode.commands.registerCommand(
+		yapiCommand.command,
+		yapiCommand.callback(context)
+	);
+	/**
+	 * 生成d.ts
+	 */
+	const generateDTSCommand = vscode.commands.registerCommand(
+		'boss.generate-dts',
+		generateDTS
+	);
 
-	function testProvider() {
-		const editor = vscode.window.activeTextEditor;
-		if (editor) {
-			const provider = new YapiProvider();
-			const links = provider.provideDocumentLinks(editor.document);
-		}
-	}
-
-	function testInput() {
-		// 获取当前激活的编辑器
-    let editor = vscode.window.activeTextEditor;
-
-    if (!editor) {
-      vscode.window.showInformationMessage('No editor is active.');
-      return;
-    }
-
-    // 获取当前编辑器的文档
-    let document = editor.document;
-
-    // 获取用户输入的字符串
-    vscode.window.showInputBox({ prompt: 'Enter string to find' }).then((str) => {
-      if (str) {
-        let regex = new RegExp(str, 'g');
-        let match;
-        let results = [];
-
-        // 在文档中查找指定的字符串
-        while ((match = regex.exec(document.getText()))) {
-          let startPos = document.positionAt(match.index);
-          let endPos = document.positionAt(match.index + match[0].length);
-          let range = new vscode.Range(startPos, endPos);
-
-          results.push({ range });
-        }
-
-        // 如果找到匹配项，则在编辑器中显示它们
-        if (results.length > 0) {
-          editor.selections = [new vscode.Selection(results[0].range.start, results[0].range.end)];
-          editor.revealRange(results[0].range, vscode.TextEditorRevealType.InCenter);
-
-          // for (let i = 1; i < results.length; i++) {
-          //   editor.selections.push(new vscode.Selection(results[i].range.start, results[i].range.end));
-          //   editor.revealRange(results[i].range, vscode.TextEditorRevealType.InCenter);
-          // }
-        } else {
-          vscode.window.showInformationMessage(`No matches found for "${str}"`);
-        }
-      }
-		});
-	}
-
-	let disposable5 = vscode.commands.registerCommand('boss.findString', () => {
-		// testProvider();
-		const activeEditor = vscode.window.activeTextEditor;
-		if (activeEditor) {
-			const docUri = activeEditor.document.uri;
-		}
-	});
-
-	// 自动生成api
-	const generateApiCommand = vscode.commands.registerCommand('boss.generate-api', () => {
-		generateApi();
-	});
+	/**
+	 * 生成api
+	 */
+	const generateApiCommand = vscode.commands.registerCommand(
+		'boss.generate-api',
+		generateApi
+	);
 
 	context.subscriptions.push(
-		disposable, disposable2, disposable3, disposable4, disposable5,
 		yapiProvider,
-		yapiProviderRegistration,
-		yapiCommandRegistration,
-		yapiCommandRegistration2,
+		yapiLinkProvider,
+		openYapiCommand,
+		generateDTSCommand,
 		generateApiCommand
 	);
 }
