@@ -2,6 +2,13 @@
 
 > 在Friday的帮助下，让你的工作充满星期五的快乐！
 
+目录
+
+* [暗黑相关功能](#功能一暗黑相关功能)
+* [自定义注释](#功能二自定义注释针对typescript生成---注释)
+* [接口地址跳转Yapi详情页](#功能三接口地址跳转yapi详情页)
+* [获取接口声明并传入接口泛型](#功能四获取接口声明并传入接口泛型)
+
 ## 功能一：暗黑相关功能
 
 ### 0. 配置参数
@@ -146,9 +153,14 @@
 '/wapi/path/to/function.json'
 ```
 
-匹配到接口路径后可以点击跳转至Yapi接口详情页
+匹配到接口路径后可以点击打开侧边栏显示接口详情（默认）或跳转至Yapi接口详情页
 
 ![src/assets/images/yapi-link.png](https://raw.githubusercontent.com/lj0812/vscode-auto-dark-mode/main/src/assets/images/yapi-link.png)
+
+通过更改 `boss.yapi.openLinkMode` 配置可调整点击行为
+
+* browser： 默认浏览器
+* webview： vscode内置webview
 
 ## 功能四：获取接口声明并传入接口泛型
 

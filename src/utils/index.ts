@@ -1,5 +1,6 @@
 import { RgbaColor } from '../types/index';
 import { getFileIndentation } from '../helpers/config.vscode';
+export * from './is';
 
 export const isHexColor = (color: string) => {
   return /#([a-f0-9]{6}|[a-f0-9]{3})/i.test(color);

@@ -7,6 +7,8 @@ import generateStyleTree from './commands/generate-style-tree';
 import customComment from './commands/custom-comment';
 import generateApi from './commands/generate-api';
 import YapiProvider, { yapiCommand, generateDTS } from './commands/search-api';
+import { activate as yapiActivate } from './modules/yapi';
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -60,11 +62,11 @@ export function activate(context: vscode.ExtensionContext) {
 	 * yapi相关
 	 * =============================
 	 */
-	const yapiProvider = new YapiProvider();
-	const yapiLinkProvider = vscode.languages.registerDocumentLinkProvider(
-		{ scheme: YapiProvider.scheme },
-		yapiProvider
-	);
+	// const yapiProvider = new YapiProvider();
+	// const yapiLinkProvider = vscode.languages.registerDocumentLinkProvider(
+	// 	{ scheme: YapiProvider.scheme },
+	// 	yapiProvider
+	// );
 
 	/**
 	 * 打开yapi
@@ -90,12 +92,14 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	context.subscriptions.push(
-		yapiProvider,
-		yapiLinkProvider,
+		// yapiProvider,
+		// yapiLinkProvider,
 		openYapiCommand,
 		generateDTSCommand,
 		generateApiCommand
 	);
+
+	yapiActivate(context);
 }
 
 // this method is called when your extension is deactivated

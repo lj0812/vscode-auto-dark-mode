@@ -7,7 +7,7 @@
   "repository": "https://github.com/lj0812/vscode-auto-dark-mode",
   "icon": "src/assets/images/icon.png",
   "engines": {
-    "vscode": "^1.75.0"
+    "vscode": "^1.86.0"
   },
   "categories": [
     "Other"
@@ -110,6 +110,24 @@
         }
       ]
     },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "yapi",
+          "title": "yapi list",
+          "icon": "src/assets/images/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "yapi": [
+        {
+          "id": "yapi.interface.one",
+          "name": "Yapi 接口",
+          "type": "webview"
+        }
+      ]
+    },
     "configuration": {
       "title": "Boss",
       "properties": {
@@ -152,6 +170,19 @@
           "type": "string",
           "default": "",
           "description": "yapi project id"
+        },
+        "boss.yapi.openLinkMode": {
+          "type": "",
+          "enum": [
+            "browser",
+            "webview"
+          ],
+          "default": "browser",
+          "description": "打开请求地址的方式",
+          "enumDescriptions": [
+            "默认浏览器",
+            "vscode内置webview"
+          ]
         },
         "boss.dts.generate": {
           "type": "boolean",
