@@ -2,12 +2,13 @@
 
 > 在Friday的帮助下，让你的工作充满星期五的快乐！
 
-目录
+## 目录
 
 * [暗黑相关功能](#功能一暗黑相关功能)
 * [自定义注释](#功能二自定义注释针对typescript生成---注释)
 * [接口地址跳转Yapi详情页](#功能三接口地址跳转yapi详情页)
 * [获取接口声明并传入接口泛型](#功能四获取接口声明并传入接口泛型)
+* [代码涂色](#代码涂色功能)
 
 ## 功能一：暗黑相关功能
 
@@ -52,23 +53,23 @@
 
 1. 只禁用某一行，此时 background 将不会转换颜色
 
-    ``` less
-      .btn {
-        // disable auto-dark-mode
-        background: @l-boss-500;
-        color: @l-white;
-      }
-    ```
+``` less
+.btn {
+  // disable auto-dark-mode
+  background: @l-boss-500;
+  color: @l-white;
+}
+```
 
 2. 禁用一个类名，此时 .btn 下的全部颜色将不会转换
 
-    ``` less
-      // disable auto-dark-mode
-      .btn {
-        background: @l-boss-500;
-        color: @l-white;
-      }
-    ```
+``` less
+// disable auto-dark-mode
+.btn {
+  background: @l-boss-500;
+  color: @l-white;
+}
+```
 
 #### 2. 我想覆盖自动生成的样式，如何处理？
 
@@ -240,7 +241,7 @@ export const get = <T>(url: string, params: unknown = {}, config: AxiosRequestCo
 
 该功能允许根据配置生成 TypeScript 类型声明文件（.d.ts）默认为 true。
 
-- `boss.dts.generate`：是否生成 .d.ts 文件。
+* `boss.dts.generate`：是否生成 .d.ts 文件。
 
 使用步骤说明：
 
@@ -254,11 +255,11 @@ export const get = <T>(url: string, params: unknown = {}, config: AxiosRequestCo
 
 该功能允许配置生成 TypeScript 类型声明文件的模式，默认为 "directory"。
 
-- `boss.dts.generateMode`：d.ts 文件存放位置的模式。可选值包括：
-  - "sameName"：在同级目录下生成与源文件同名的类型声明文件。
-  - "unified"：在同级目录下生成一个名为 types.d.ts 的类型声明文件。
-  - "directory"：首先在同级目录下创建一个名为 types 的目录，然后在该目录下生成与源文件同名的类型声明文件。
-  - "custom"：指定一个目录，并为每个源文件单独命名并生成对应的类型声明文件。。
+* `boss.dts.generateMode`：d.ts 文件存放位置的模式。可选值包括：
+  * "sameName"：在同级目录下生成与源文件同名的类型声明文件。
+  * "unified"：在同级目录下生成一个名为 types.d.ts 的类型声明文件。
+  * "directory"：首先在同级目录下创建一个名为 types 的目录，然后在该目录下生成与源文件同名的类型声明文件。
+  * "custom"：指定一个目录，并为每个源文件单独命名并生成对应的类型声明文件。。
 
 使用步骤说明：
 
@@ -272,7 +273,7 @@ export const get = <T>(url: string, params: unknown = {}, config: AxiosRequestCo
 
 该功能允许自定义生成的 d.ts 文件的存放路径，默认为 "src/types/apis"。
 
-- `boss.dts.customPath`：自定义的 d.ts 文件存放路径。
+* `boss.dts.customPath`：自定义的 d.ts 文件存放路径。
 
 使用步骤说明：
 
@@ -286,12 +287,32 @@ export const get = <T>(url: string, params: unknown = {}, config: AxiosRequestCo
 
 该功能允许自定义生成的 d.ts 文件的生成规则，默认为 "unified"。
 
-- `boss.dts.customMethod`：自定义的 d.ts 文件生成规则。可选值包括：
-  - "interface"：根据接口组织目录，为每个接口生成一个独立的文件。
-  - "unified"：统一生成一个文件，包含所有接口的类型声明。
+* `boss.dts.customMethod`：自定义的 d.ts 文件生成规则。可选值包括：
+  * "interface"：根据接口组织目录，为每个接口生成一个独立的文件。
+  * "unified"：统一生成一个文件，包含所有接口的类型声明。
 
 使用步骤说明：
 
 1. 打开 VS Code 的用户设置（Preferences > Settings）。
 2. 搜索 "boss.dts.customMethod"，找到该配置项。
 3. 根据需要，将该配置项设置为 "interface" 或 "unified" 中的一个，以确定自定义 d.ts 文件的生成规则。
+
+### 代码涂色功能
+
+> 通过特定的标识使得代码具备背景色，以便更快的找到特定代码，如 vue 生命周期函数
+
+![src/assets/images/code-paint.png](https://raw.githubusercontent.com/lj0812/vscode-auto-dark-mode/main/src/assets/images/code-paint.png)
+
+标识分为开始标识和结束标识，处于中间的代码将被涂色
+
+开始标识 `// ---------<> id <>---------`
+
+结束标识 `// ---------</> id </>---------`
+
+> 其中 id 需一致
+
+代码涂色的颜色默认为比当前主题色稍微深一点的颜色，也可以自定义颜色，支持 hex、rgb、rgba，在开始标识中定义
+
+如：`// ---------<> vue-life-methods | #01363D <>---------`
+
+

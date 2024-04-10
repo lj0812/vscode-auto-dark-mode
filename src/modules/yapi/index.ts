@@ -110,7 +110,6 @@ class YapiLinkProvider implements vscode.DocumentLinkProvider {
 	constructor(
 		private _webviewProvider: YapiWebviewProvider
 	) {
-		console.log('YapiProvider constructor');
 
 	}
 

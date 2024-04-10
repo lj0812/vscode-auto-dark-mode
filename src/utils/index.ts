@@ -45,6 +45,23 @@ export const rgb2hex = (r: number, g: number, b: number) => {
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 };
 
+// hex 转 rgb
+export const hex2rgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+  } : null;
+};
+
+export const darkenColor = (hex: string, percent: number) => {
+  const { r, g, b } = hex2rgb(hex)!;
+  const amount = Math.round(255 * percent / 100);
+
+  return rgb2hex(Math.max(r - amount, 0), Math.max(g - amount, 0), Math.max(b - amount, 0));
+};
+
 // 3位hex转6位hex
 export const normalizeHex = (hex: string) => hex.length >= 6 ? hex : hex.replace(/[0-9a-f]/ig, match => match.repeat(2));
 

@@ -147,7 +147,6 @@ export default class Provider implements vscode.DocumentLinkProvider {
   private _pathMap = new Map<vscode.Range, string>();
 
   constructor() {
-    console.log('YapiProvider constructor');
   }
 
   dispose() {

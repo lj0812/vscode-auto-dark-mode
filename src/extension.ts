@@ -8,6 +8,7 @@ import customComment from './commands/custom-comment';
 import generateApi from './commands/generate-api';
 import YapiProvider, { yapiCommand, generateDTS } from './commands/search-api';
 import { activate as yapiActivate } from './modules/yapi';
+import { activate as codePaintActivate } from './modules/code-paint';
 
 
 // this method is called when your extension is activated
@@ -100,6 +101,8 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	yapiActivate(context);
+
+	codePaintActivate(context);
 }
 
 // this method is called when your extension is deactivated
