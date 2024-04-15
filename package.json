@@ -75,6 +75,10 @@
       {
         "command": "boss.generate-api",
         "title": "generate api"
+      },
+      {
+        "command": "boss.code-paint",
+        "title": "代码涂色"
       }
     ],
     "keybindings": [
@@ -107,6 +111,12 @@
           "when": "editorLangId == vue && config.boss.dark.enable",
           "command": "boss.auto-dark-mode",
           "group": "navigation@-1"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "boss.code-paint",
+          "group": "navigation"
         }
       ]
     },

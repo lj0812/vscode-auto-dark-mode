@@ -305,14 +305,16 @@ export const get = <T>(url: string, params: unknown = {}, config: AxiosRequestCo
 
 标识分为开始标识和结束标识，处于中间的代码将被涂色
 
-开始标识 `// ---------<> id <>---------`
+开始标识包含 `----------<> id <>----------`
 
-结束标识 `// ---------</> id </>---------`
+结束标识包含 `----------</> id </>----------`
 
-> 其中 id 需一致
+> 其中 id 需一致，可为空
 
 代码涂色的颜色默认为比当前主题色稍微深一点的颜色，也可以自定义颜色，支持 hex、rgb、rgba，在开始标识中定义
 
-如：`// ---------<> vue-life-methods | #01363D <>---------`
+如：`// ----------<> vue-life-methods | #01363D <>----------`
 
+#### 可通过选中代码右键，选择`代码涂色`按钮进行涂色
 
+![src/assets/images/code-paint-1.png](https://raw.githubusercontent.com/lj0812/vscode-auto-dark-mode/main/src/assets/images/code-paint-1.png)

@@ -71,3 +71,32 @@ export const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.sli
 export const convertToCamelCase = (input: string) => {
   return input.replace(/[-_](.)/g, (_, c) => c.toUpperCase());
 };
+
+/**
+ * 根据不同语言，返回包裹后字符串注释
+ * @param {string} text 文本
+ * @param {string} languageId 语言 id
+ * language id: https://code.visualstudio.com/docs/languages/identifiers
+ * plaintext,code-text-binary,Log,log,scminput,bat,clojure,coffeescript,jsonc,json,c,cpp,cuda-cpp,csharp,css,dart,diff,dockerfile,ignore,fsharp,git-commit,git-rebase,go,groovy,handlebars,hlsl,html,ini,properties,java,javascriptreact,javascript,jsx-tags,jsonl,snippets,julia,juliamarkdown,tex,latex,bibtex,cpp_embedded_latex,markdown_latex_combined,less,lua,makefile,markdown,markdown-math,wat,objective-c,objective-cpp,perl,raku,php,powershell,jade,python,r,razor,restructuredtext,ruby,rust,scss,search-result,shaderlab,shellscript,sql,swift,typescript,typescriptreact,vb,xml,xsl,dockercompose,yaml,gitignore,editorconfig,code-runner-output,code-referencing,svg,dotenv,wxml,wxml-pug,vue,quokka-output,quokka-recent,quokka-timeline
+ * @returns {string}
+ */
+export const wrapComment = (text: string, languageId: string) => {
+  switch (languageId) {
+    case 'javascript':
+    case 'typescript':
+    case 'javascriptreact':
+    case 'typescriptreact':
+    case 'script':
+      return `// ${text}`;
+    case 'html':
+    case 'template':
+      return `<!-- ${text} -->`;
+    case 'css':
+    case 'less':
+    case 'scss':
+    case 'style':
+      return `/* ${text} */`;
+    default:
+      return text;
+  }
+};
